@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+
+# Secrets and locally captured contact submissions (contains personal data).
+.env
+data/
+
+# Source masters. Never shipped — the site uses the WebP in assets/.
+frames/
+source-images/

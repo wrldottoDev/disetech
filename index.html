@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DISETECH | Materiales y soluciones eléctricas</title>
+    <meta name="description" content="Materiales eléctricos, instalaciones y soluciones para proyectos residenciales y comerciales en Costa Rica." />
+    <link rel="canonical" href="https://www.disetechcr.com/" />
+    <meta name="theme-color" content="#0B0D0E" />
+    <meta name="color-scheme" content="dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DISETECH" />
+    <meta property="og:locale" content="es_CR" />
+    <meta property="og:url" content="https://www.disetechcr.com/" />
+    <meta property="og:title" content="DISETECH | Materiales y soluciones eléctricas" />
+    <meta property="og:description" content="Materiales eléctricos, instalaciones y soluciones para proyectos residenciales y comerciales en Costa Rica." />
+    <meta property="og:image" content="https://www.disetechcr.com/assets/brand/compartir.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="675" />
+    <meta property="og:image:alt" content="DISETECH — Energía para cada proyecto." />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DISETECH | Materiales y soluciones eléctricas" />
+    <meta name="twitter:description" content="Materiales eléctricos, instalaciones y soluciones para proyectos residenciales y comerciales en Costa Rica." />
+    <meta name="twitter:image" content="https://www.disetechcr.com/assets/brand/compartir.jpg" />
+    <meta name="twitter:image:alt" content="DISETECH — Energía para cada proyecto." />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0D0E'/%3E%3Cpath d='M18 4 9 18h6l-2 10 10-14h-6z' fill='%2355F20D'/%3E%3C/svg%3E" />
+    <!-- inline so the very first paint is already dark, before styles.css lands -->
+    <style>
+      html,
+      body {
+        background: #0b0d0e;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap"
+    />
+    <link rel="stylesheet" href="src/styles.css" />
+
+    <!-- first frame + logo: the two things needed for a fast hero -->
+    <link rel="preload" as="image" href="assets/frames/desktop/frame_0001.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/brand/disetech-logo.webp" />
+  </head>
+
+  <body>
+    <a class="sr-only" href="#contenido">Saltar al contenido</a>
+
+    <header class="site-nav" data-navbar>
+      <div class="site-nav__surface" data-nav-surface></div>
+
+      <nav class="site-nav__inner" aria-label="Principal">
+        <a class="site-nav__logo" href="#inicio">
+          <img src="assets/brand/disetech-logo.webp" width="987" height="161" alt="DISETECH" />
+        </a>
+
+        <ul class="site-nav__links">
+          <li><a class="site-nav__link" href="#inicio">Inicio</a></li>
+          <li><a class="site-nav__link" href="#materiales">Materiales</a></li>
+          <li><a class="site-nav__link" href="#servicios">Servicios</a></li>
+          <li><a class="site-nav__link" href="#nosotros">Nosotros</a></li>
+          <li><a class="site-nav__link" href="#contacto">Contacto</a></li>
+        </ul>
+
+        <a class="btn btn--ghost site-nav__cta" href="#contacto">Solicitar cotización</a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          data-nav-toggle
+          aria-expanded="false"
+          aria-controls="nav-menu"
+          aria-label="Abrir menú"
+        >
+          <span></span><span></span>
+        </button>
+      </nav>
+
+      <dialog class="nav-menu" id="nav-menu" data-nav-menu aria-label="Menú de navegación">
+        <div class="nav-menu__panel" data-nav-panel>
+          <div class="nav-menu__bar">
+            <img
+              class="nav-menu__logo"
+              src="assets/brand/disetech-logo.webp"
+              width="987"
+              height="161"
+              alt="DISETECH"
+            />
+            <button class="nav-menu__close" type="button" data-nav-close aria-label="Cerrar menú">
+              &#10005;
+            </button>
+          </div>
+
+          <ul class="nav-menu__links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#materiales">Materiales</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+
+          <a class="btn btn--primary" href="#contacto">Solicitar cotización</a>
+        </div>
+      </dialog>
+    </header>
+
+    <main id="contenido">
+      <!-- ============================================================ 01 HERO -->
+      <section class="hero" id="inicio" data-hero aria-labelledby="hero-title">
+        <div class="hero__viewport">
+          <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+
+          <div class="hero__overlay" data-hero-overlay>
+            <p class="sr-only">Energía para cada proyecto.</p>
+
+            <div class="beat beat--phrase" data-beat="frase" aria-hidden="true">
+              <p class="phrase">
+                <span class="line-mask"
+                  ><span class="phrase__line" data-phrase-line="energia">Energía</span></span
+                >
+                <span class="line-mask"
+                  ><span class="phrase__line" data-phrase-line="para-cada">para cada</span></span
+                >
+                <span class="line-mask"
+                  ><span class="phrase__line" data-phrase-line="proyecto">proyecto.</span></span
+                >
+              </p>
+            </div>
+
+            <div class="beat beat--brand" data-beat="brand">
+              <div class="hero__brand">
+                <h1 id="hero-title" style="margin: 0">
+                  <img
+                    class="hero__logo"
+                    src="assets/brand/disetech-logo.webp"
+                    width="987"
+                    height="161"
+                    alt="DISETECH"
+                  />
+                </h1>
+                <div class="hero__ctas">
+                  <a class="btn btn--primary" href="#contacto">Solicitar cotización</a>
+                  <a class="btn btn--ghost" href="#materiales">Ver materiales</a>
+                </div>
+              </div>
+            </div>
+
+            <p class="hero__hint" data-hero-hint aria-hidden="true"><span></span>Scroll</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================== 02 INTRO -->
+      <section class="section section--after-hero" id="nosotros">
+        <div class="shell" data-reveal>
+          <p class="eyebrow" data-reveal-item>Soluciones eléctricas</p>
+
+          <div class="intro__grid">
+            <h2 class="h2 intro__title">
+              <span class="line-mask"><span data-reveal-item>Materiales.</span></span>
+              <span class="line-mask"><span data-reveal-item>Servicio.</span></span>
+              <span class="line-mask"><em data-reveal-item>Todo conectado.</em></span>
+            </h2>
+
+            <p class="lede" data-reveal-item>
+              Materiales eléctricos y servicio en un mismo lugar. Soluciones para proyectos
+              residenciales y comerciales, desde el componente hasta la instalación.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================= 03 MATERIALES -->
+      <section class="section" id="materiales">
+        <div class="shell">
+          <div class="materials__grid" data-reveal>
+            <div class="materials__aside">
+              <p class="eyebrow" data-reveal-item>Materiales</p>
+              <h2 class="h2">
+                <span class="line-mask"><span data-reveal-item>Materiales para</span></span>
+                <span class="line-mask"><span data-reveal-item>hacerlo realidad.</span></span>
+              </h2>
+              <p class="lede" data-reveal-item style="margin-top: 1.5rem">
+                Lo esencial para construir, ampliar o renovar una instalación eléctrica.
+              </p>
+
+              <!--
+                Typographic echo of the hovered category. If product photography
+                ever lands, this block is the slot for it — swap the two spans for
+                a <figure> and keep the same data-material-display-* hooks.
+              -->
+              <div class="materials__display" aria-hidden="true">
+                <span class="materials__display-index" data-material-display-index>—</span>
+                <span class="materials__display-name" data-material-display-name>
+                  Seis categorías, un mismo lugar.
+                </span>
+              </div>
+            </div>
+
+            <ul class="materials__list" data-materials>
+              <li class="material" data-material data-index="01" data-reveal-item>
+                <span class="material__index">01</span>
+                <h3 class="material__name">Protección eléctrica</h3>
+                <p class="material__note">
+                  Breakers, disyuntores y protección para cada circuito de la instalación.
+                </p>
+              </li>
+              <li class="material" data-material data-index="02" data-reveal-item>
+                <span class="material__index">02</span>
+                <h3 class="material__name">Cableado y conductores</h3>
+                <p class="material__note">
+                  Cables y conductores para acometidas, circuitos y distribución eléctrica.
+                </p>
+              </li>
+              <li class="material" data-material data-index="03" data-reveal-item>
+                <span class="material__index">03</span>
+                <h3 class="material__name">Iluminación</h3>
+                <p class="material__note">
+                  Iluminación para espacios residenciales, comerciales y de trabajo.
+                </p>
+              </li>
+              <li class="material" data-material data-index="04" data-reveal-item>
+                <span class="material__index">04</span>
+                <h3 class="material__name">Tomacorrientes e interruptores</h3>
+                <p class="material__note">
+                  Tomacorrientes, interruptores y acabados para cada espacio.
+                </p>
+              </li>
+              <li class="material" data-material data-index="05" data-reveal-item>
+                <span class="material__index">05</span>
+                <h3 class="material__name">Tableros y distribución</h3>
+                <p class="material__note">
+                  Tableros y centros de carga para organizar y distribuir la energía.
+                </p>
+              </li>
+              <li class="material" data-material data-index="06" data-reveal-item>
+                <span class="material__index">06</span>
+                <h3 class="material__name">Accesorios eléctricos</h3>
+                <p class="material__note">
+                  Cajas, conectores y accesorios para completar cada instalación.
+                </p>
+              </li>
+            </ul>
+          </div>
+
+          <p style="margin-top: clamp(2rem, 5vh, 3rem)">
+            <a class="arrow-link" href="#contacto">
+              Consultar disponibilidad
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+            </a>
+          </p>
+        </div>
+      </section>
+
+
+      <!-- ============================================== PROFUNDIDAD 1 -->
+      <section class="depth" data-depth aria-hidden="true">
+        <div class="depth__media" data-depth-media>
+          <img
+            src="assets/backdrops/fondo1-1372.webp"
+            srcset="assets/backdrops/fondo1-900.webp 900w, assets/backdrops/fondo1-1372.webp 1372w"
+            sizes="100vw"
+            width="1372"
+            height="941"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="shell depth__content">
+          <p class="depth__line">Del componente<br /><em>a la instalación.</em></p>
+        </div>
+      </section>
+
+      <!-- ========================================================= 04 SERVICIOS -->
+      <section class="section" id="servicios">
+        <div class="shell">
+          <div data-reveal>
+            <p class="eyebrow" data-reveal-item>Servicios</p>
+            <h2 class="h2">
+                <span class="line-mask"><span data-reveal-item>Más que materiales.</span></span>
+            </h2>
+            <p class="lede" data-reveal-item style="margin-top: 1.5rem">
+              También llevamos el proyecto a la instalación.
+            </p>
+          </div>
+
+          <ul class="services__list">
+            <li class="service grow-line" data-reveal>
+              <span class="service__index" data-reveal-item>01</span>
+              <h3 class="h3" data-reveal-item>Instalaciones eléctricas</h3>
+              <p class="service__body" data-reveal-item>
+                Instalaciones nuevas, ampliaciones y remodelaciones con materiales y ejecución
+                coordinados en un mismo servicio.
+              </p>
+              <span class="service__action" data-reveal-item>
+                <a class="arrow-link" href="#contacto">
+                  Cotizar
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </a>
+              </span>
+            </li>
+
+            <li class="service grow-line" data-reveal>
+              <span class="service__index" data-reveal-item>02</span>
+              <h3 class="h3" data-reveal-item>Mantenimiento y soporte</h3>
+              <p class="service__body" data-reveal-item>
+                Revisión, diagnóstico y mejora de instalaciones existentes. Corregimos lo necesario
+                y reemplazamos solo donde hace falta.
+              </p>
+              <span class="service__action" data-reveal-item>
+                <a class="arrow-link" href="#contacto">
+                  Cotizar
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </a>
+              </span>
+            </li>
+
+            <li class="service grow-line" data-reveal>
+              <span class="service__index" data-reveal-item>03</span>
+              <h3 class="h3" data-reveal-item>Proyectos a medida</h3>
+              <p class="service__body" data-reveal-item>
+                Te ayudamos a definir materiales, alcance y ejecución según las necesidades reales
+                del proyecto.
+              </p>
+              <span class="service__action" data-reveal-item>
+                <a class="arrow-link" href="#contacto">
+                  Cotizar
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </a>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======================================================= 05 SOLUCIONES -->
+      <section class="section" id="soluciones">
+        <div class="shell">
+          <div data-reveal>
+            <p class="eyebrow" data-reveal-item>Soluciones</p>
+            <h2 class="h2">
+                <span class="line-mask"><span data-reveal-item>Cada espacio</span></span>
+                <span class="line-mask"><span data-reveal-item>tiene sus necesidades.</span></span>
+            </h2>
+          </div>
+
+          <div class="solutions__split" data-reveal style="margin-top: clamp(2.5rem, 7vh, 4.5rem)">
+            <div class="solution" data-reveal-item>
+              <h3 class="h3">Residencial</h3>
+              <p class="lede" style="margin-top: 1rem">
+                Soluciones para construir, ampliar, renovar o mejorar la instalación eléctrica de tu
+                hogar.
+              </p>
+              <ul class="solution__list">
+                <li>Obra nueva y ampliaciones</li>
+                <li>Remodelaciones</li>
+                <li>Tableros y circuitos</li>
+                <li>Iluminación y puntos nuevos</li>
+              </ul>
+            </div>
+
+            <div class="solution" data-reveal-item>
+              <h3 class="h3">Comercial</h3>
+              <p class="lede" style="margin-top: 1rem">
+                Soluciones eléctricas para locales, oficinas y espacios de trabajo.
+              </p>
+              <ul class="solution__list">
+                <li>Locales y oficinas</li>
+                <li>Adecuación de espacios</li>
+                <li>Distribución y tableros</li>
+                <li>Mantenimiento programado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- =========================================================== 06 MARCAS -->
+      <!--
+        PENDING TWO THINGS BEFORE THIS GOES LIVE:
+        1. Confirm this list against the real catalogue. It is the list supplied
+           for the brief, not something verified against what DISETECH stocks.
+        2. Drop official logo files into assets/brands/ and replace the text of
+           each <li> with <img src="assets/brands/<name>.svg" alt="<Brand>" />.
+           The .brand img rule already sizes and de-saturates them.
+        No logo was drawn, traced or generated here on purpose.
+        LEDVANCE / OSRAM left out: the brief marked it conditional and there is
+        nothing in the project to resolve the condition. Add an <li> to enable.
+      -->
+      <section
+        class="marquee-section marquee-section--depth"
+        id="marcas"
+        data-marquee-section
+        data-depth
+        aria-labelledby="marcas-title"
+      >
+        <div class="depth__media" data-depth-media aria-hidden="true">
+          <img
+            src="assets/backdrops/fondo2-1252.webp"
+            srcset="assets/backdrops/fondo2-900.webp 900w, assets/backdrops/fondo2-1252.webp 1252w"
+            sizes="100vw"
+            width="1252"
+            height="541"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <div class="shell marquee-section__head" data-reveal>
+          <p class="eyebrow" data-reveal-item>Marcas</p>
+          <h2 class="h2" id="marcas-title">
+            <span class="line-mask"><span data-reveal-item>Marcas para</span></span>
+            <span class="line-mask"><span data-reveal-item>cada proyecto.</span></span>
+          </h2>
+        </div>
+
+        <div class="marquee">
+          <div class="marquee__track" data-marquee-track>
+            <ul class="marquee__group" data-marquee-group>
+              <li class="brand brand--invert brand--wide"><img src="assets/brands/schneider.webp" alt="Schneider Electric" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/sylvania.webp" alt="Sylvania" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/eaton.webp" alt="Eaton" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/finder.webp" alt="Finder" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/ilukon.webp" alt="Ilukon" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/tecnolite.webp" alt="Tecnolite" loading="lazy" decoding="async" /></li>
+              <li class="brand"><img src="assets/brands/durman.svg" alt="Durman by aliaxis" loading="lazy" decoding="async" /></li>
+              <li class="brand brand--invert"><img src="assets/brands/bticino.svg" alt="BTicino" loading="lazy" decoding="async" /></li>
+              <!-- TODO: assets/brands/ledvance.svg — ledvance.com only exposes the square app icon
+                   (a PNG wrapped in an SVG), not the horizontal wordmark this strip needs. -->
+              <li class="brand brand--text">LEDVANCE</li>
+              <li class="brand brand--invert"><img src="assets/brands/famatel.svg" alt="Famatel" loading="lazy" decoding="async" /></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== 07 WHY -->
+      <section class="section" id="por-que">
+        <div class="shell">
+          <div data-reveal>
+            <p class="eyebrow" data-reveal-item>Por qué DISETECH</p>
+            <h2 class="h2">
+                <span class="line-mask"><span data-reveal-item>Cómo trabajamos.</span></span>
+            </h2>
+          </div>
+
+          <ul class="why__list">
+            <li class="why__row grow-line" data-reveal>
+              <span class="why__index" data-reveal-item>01</span>
+              <h3 class="h3" data-reveal-item>Soluciones claras</h3>
+              <p class="why__body" data-reveal-item>
+                Definimos qué necesita el proyecto antes de cotizar, con una propuesta clara y fácil
+                de entender.
+              </p>
+            </li>
+            <li class="why__row grow-line" data-reveal>
+              <span class="why__index" data-reveal-item>02</span>
+              <h3 class="h3" data-reveal-item>Atención directa</h3>
+              <p class="why__body" data-reveal-item>
+                Atención directa para resolver consultas técnicas, materiales y coordinación del
+                proyecto.
+              </p>
+            </li>
+            <li class="why__row grow-line" data-reveal>
+              <span class="why__index" data-reveal-item>03</span>
+              <h3 class="h3" data-reveal-item>Materiales + servicio</h3>
+              <p class="why__body" data-reveal-item>
+                Materiales e instalación coordinados en un mismo lugar para simplificar el
+                proyecto.
+              </p>
+            </li>
+            <li class="why__row grow-line" data-reveal>
+              <span class="why__index" data-reveal-item>04</span>
+              <h3 class="h3" data-reveal-item>A la medida del proyecto</h3>
+              <p class="why__body" data-reveal-item>
+                Cada propuesta se ajusta al alcance real, desde un punto eléctrico hasta una
+                instalación completa.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================================================== 08 CTA -->
+      <section class="cta">
+        <div class="shell">
+          <h2 class="cta__title" data-reveal>
+            <span class="line-mask"><span data-reveal-item>¿Tenés un</span></span>
+            <span class="line-mask"><span data-reveal-item>proyecto?</span></span>
+          </h2>
+          <div class="cta__wire" data-cta-wire aria-hidden="true"></div>
+          <div data-reveal>
+            <p class="cta__lede" data-reveal-item>Hablemos de lo que necesitás.</p>
+            <p style="margin: 0" data-reveal-item>
+              <a class="btn btn--primary" href="#contacto">Solicitar cotización</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= 09 CONTACTO -->
+      <section class="section" id="contacto">
+        <div class="shell">
+          <div class="contact__grid">
+            <div class="contact__aside" data-reveal>
+              <p class="eyebrow" data-reveal-item>Contacto</p>
+              <h2 class="h2">
+                <span class="line-mask"><span data-reveal-item>Contanos sobre</span></span>
+                <span class="line-mask"><span data-reveal-item>tu proyecto.</span></span>
+              </h2>
+              <p class="lede" data-reveal-item style="margin-top: 1.5rem">
+                Contanos qué necesitás y te ayudamos a encontrar la mejor solución para tu
+                proyecto.
+              </p>
+
+              <div class="contact__direct" data-reveal-item>
+                <p class="muted" style="margin: 0 0 0.5rem; font-size: 0.85rem">
+                  También podés escribirnos a
+                </p>
+                <p style="margin: 0"><a href="mailto:info@disetechcr.com">info@disetechcr.com</a></p>
+              </div>
+            </div>
+
+            <form class="contact__form" data-contact-form novalidate>
+              <div class="form__row">
+                <div class="field">
+                  <label for="nombre">Nombre *</label>
+                  <input
+                    id="nombre"
+                    name="nombre"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    aria-describedby="err-nombre"
+                  />
+                  <span class="field__error" id="err-nombre"></span>
+                </div>
+
+                <div class="field">
+                  <label for="empresa">Empresa</label>
+                  <input
+                    id="empresa"
+                    name="empresa"
+                    type="text"
+                    autocomplete="organization"
+                    aria-describedby="err-empresa"
+                  />
+                  <span class="field__error" id="err-empresa"></span>
+                </div>
+              </div>
+
+              <div class="form__row">
+                <div class="field">
+                  <label for="email">Correo electrónico *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    aria-describedby="err-email"
+                  />
+                  <span class="field__error" id="err-email"></span>
+                </div>
+
+                <div class="field">
+                  <label for="telefono">Teléfono *</label>
+                  <input
+                    id="telefono"
+                    name="telefono"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    required
+                    aria-describedby="err-telefono"
+                  />
+                  <span class="field__error" id="err-telefono"></span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="tipo">Tipo de solicitud *</label>
+                <select id="tipo" name="tipo" required aria-describedby="err-tipo">
+                  <option value="">Seleccioná una opción</option>
+                  <option value="materiales">Materiales eléctricos</option>
+                  <option value="instalacion">Instalación / servicio</option>
+                  <option value="residencial">Proyecto residencial</option>
+                  <option value="comercial">Proyecto comercial</option>
+                  <option value="otro">Otro</option>
+                </select>
+                <span class="field__error" id="err-tipo"></span>
+              </div>
+
+              <div class="field">
+                <label for="mensaje">Mensaje *</label>
+                <textarea
+                  id="mensaje"
+                  name="mensaje"
+                  rows="4"
+                  required
+                  aria-describedby="err-mensaje"
+                ></textarea>
+                <span class="field__error" id="err-mensaje"></span>
+              </div>
+
+              <div class="field field--consent">
+                <input id="consent" name="consent" type="checkbox" />
+                <label for="consent">
+                  Acepto que DISETECH use estos datos para responder a mi solicitud.
+                </label>
+              </div>
+
+              <!-- honeypot: real people never see it, so anything typed here is a bot -->
+              <div class="form__trap" aria-hidden="true">
+                <label for="website">No completar</label>
+                <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <div class="form__footer">
+                <button class="btn btn--primary" type="submit" data-submit>Enviar solicitud</button>
+                <p class="form__status" data-status role="status" aria-live="polite"></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================= 10 FOOTER -->
+    <footer class="footer">
+      <div class="shell">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <img
+              class="footer__logo"
+              src="assets/brand/disetech-logo.webp"
+              width="987"
+              height="161"
+              alt="DISETECH"
+            />
+            <p class="footer__slogan">Energía para cada proyecto.</p>
+          </div>
+
+          <nav aria-label="Pie de página">
+            <h2 class="footer__heading">Navegación</h2>
+            <ul class="footer__list">
+              <li><a href="#inicio">Inicio</a></li>
+              <li><a href="#materiales">Materiales</a></li>
+              <li><a href="#servicios">Servicios</a></li>
+              <li><a href="#nosotros">Nosotros</a></li>
+              <li><a href="#contacto">Contacto</a></li>
+            </ul>
+          </nav>
+
+          <div>
+            <h2 class="footer__heading">Contacto</h2>
+            <ul class="footer__list">
+              <li><a href="mailto:info@disetechcr.com">info@disetechcr.com</a></li>
+              <li>
+                <a href="https://www.instagram.com/disetech.cr" rel="noopener" target="_blank"
+                  >Instagram</a
+                >
+              </li>
+              <li>
+                <a href="https://www.facebook.com/share/19FRsNzJVz/" rel="noopener" target="_blank"
+                  >Facebook</a
+                >
+              </li>
+              <!--
+                LinkedIn: no real profile URL exists in the project yet. Add an <li>
+                here once there is one — never link a guessed handle. Same goes for
+                a public phone number and a physical address.
+              -->
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p style="margin: 0">
+            &copy; <span data-year>2026</span> DISETECH. Todos los derechos reservados.
+          </p>
+          <p style="margin: 0">Costa Rica</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
