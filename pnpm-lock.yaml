@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      nodemailer:
+        specifier: ^10.0.2
+        version: 10.0.2
+
+packages:
+
+  nodemailer@10.0.2:
+    resolution: {integrity: sha512-83mO0TnWXySiJXdMAIUYmlXYdJ2KUq/w8EJgc4ogKU2UssaHf7ZPeuHcb4YCxeNiM0DDshnm291U0/ClrSZZsg==}
+    engines: {node: '>=20.0.0'}
+
+snapshots:
+
+  nodemailer@10.0.2: {}
