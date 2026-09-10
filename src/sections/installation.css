@@ -1,0 +1,91 @@
+/* Only the first industrial backdrop; the shared depth and brands stay intact. */
+.installation.depth {
+  display: block;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.installation.depth::before { display: none; }
+
+.installation__stage {
+  position: relative;
+  top: 0;
+  height: 90svh;
+  min-height: 680px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+
+.installation.installation--animated { height: 260svh; }
+.installation--animated .installation__stage { position: sticky; height: 100svh; min-height: 0; }
+
+.installation .depth__media img {
+  opacity: 0.82;
+  /* Keep the existing cover, center/64% crop and static color treatment. */
+  will-change: auto;
+}
+
+.installation__stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--bg), transparent 22%, transparent 80%, var(--bg));
+}
+
+.installation .depth__content {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  translate: -50% 0;
+  padding-block: 0;
+  z-index: 1;
+}
+
+.installation .depth__line > span,
+.installation .depth__line > em { display: block; }
+
+.installation__drawing {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 1;
+}
+
+.installation__wire { opacity: 0.5; }
+.installation__node circle { fill: var(--bg); }
+.installation__crosshair { opacity: 0.4; }
+.installation__pulse { opacity: 0; }
+
+.installation__label,
+.installation__note {
+  fill: var(--gray);
+  stroke: none;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.installation__note { opacity: 0.35; font-size: 8px; }
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .installation .depth__content { top: 34%; }
+}
+
+@media (max-width: 599px) {
+  .installation.installation--animated { height: 230svh; }
+  .installation .depth__content { top: 18%; }
+  .installation__label { font-size: 9px; letter-spacing: 0.08em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .installation.installation--animated { height: auto; }
+  .installation--animated .installation__stage { position: relative; height: 90svh; min-height: 680px; }
+}

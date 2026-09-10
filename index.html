@@ -47,6 +47,10 @@
     <!-- first frame + logo: the two things needed for a fast hero -->
     <link rel="preload" as="image" href="assets/frames/desktop/frame_0001.webp" fetchpriority="high" />
     <link rel="preload" as="image" href="assets/brand/disetech-logo.webp" />
+    <link rel="stylesheet" href="src/sections/circuit.css" />
+    <link rel="stylesheet" href="src/sections/installation.css" />
+    <link rel="stylesheet" href="src/sections/services.css" />
+    <link rel="stylesheet" href="src/sections/solutions.css" />
   </head>
 
   <body>
@@ -158,17 +162,17 @@
 
       <!-- =========================================================== 02 INTRO -->
       <section class="section section--after-hero" id="nosotros">
-        <div class="shell" data-reveal>
-          <p class="eyebrow" data-reveal-item>Soluciones eléctricas</p>
+        <div class="shell">
+          <p class="eyebrow">Soluciones eléctricas</p>
 
           <div class="intro__grid">
             <h2 class="h2 intro__title">
-              <span class="line-mask"><span data-reveal-item>Materiales.</span></span>
-              <span class="line-mask"><span data-reveal-item>Servicio.</span></span>
-              <span class="line-mask"><em data-reveal-item>Todo conectado.</em></span>
+              <span class="line-mask"><span>Materiales.</span></span>
+              <span class="line-mask"><span>Servicio.</span></span>
+              <span class="line-mask"><em>Todo conectado.</em></span>
             </h2>
 
-            <p class="lede" data-reveal-item>
+            <p class="lede">
               Materiales eléctricos y servicio en un mismo lugar. Soluciones para proyectos
               residenciales y comerciales, desde el componente hasta la instalación.
             </p>
@@ -262,87 +266,197 @@
 
 
       <!-- ============================================== PROFUNDIDAD 1 -->
-      <section class="depth" data-depth aria-hidden="true">
-        <div class="depth__media" data-depth-media>
-          <img
-            src="assets/backdrops/fondo1-1372.webp"
-            srcset="assets/backdrops/fondo1-900.webp 900w, assets/backdrops/fondo1-1372.webp 1372w"
-            sizes="100vw"
-            width="1372"
-            height="941"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-        <div class="shell depth__content">
-          <p class="depth__line">Del componente<br /><em>a la instalación.</em></p>
+      <section class="depth installation" data-installation aria-label="Del componente a la instalación">
+        <div class="installation__stage">
+          <div class="depth__media" data-depth-media>
+            <img
+              src="assets/backdrops/fondo1-1372.webp"
+              srcset="assets/backdrops/fondo1-900.webp 900w, assets/backdrops/fondo1-1372.webp 1372w"
+              sizes="100vw"
+              width="1372"
+              height="941"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <svg class="installation__drawing" aria-hidden="true" focusable="false"></svg>
+          <div class="shell depth__content">
+            <p class="depth__line"><span data-installation-first>Del componente</span><em data-installation-last>a la instalación.</em></p>
+          </div>
         </div>
       </section>
 
       <!-- ========================================================= 04 SERVICIOS -->
-      <section class="section" id="servicios">
+      <section class="section services" id="servicios" data-services>
         <div class="shell">
-          <div data-reveal>
-            <p class="eyebrow" data-reveal-item>Servicios</p>
+          <div class="services__heading">
+            <p class="eyebrow">Servicios</p>
             <h2 class="h2">
-                <span class="line-mask"><span data-reveal-item>Más que materiales.</span></span>
+              <span class="line-mask"><span>Más que materiales.</span></span>
             </h2>
-            <p class="lede" data-reveal-item style="margin-top: 1.5rem">
+            <p class="lede" style="margin-top: 1.5rem">
               También llevamos el proyecto a la instalación.
             </p>
           </div>
 
           <ul class="services__list">
-            <li class="service grow-line" data-reveal>
-              <span class="service__index" data-reveal-item>01</span>
-              <h3 class="h3" data-reveal-item>Instalaciones eléctricas</h3>
-              <p class="service__body" data-reveal-item>
+            <li class="service" data-service="installation">
+              <span class="service__index">01</span>
+              <h3 class="h3" id="service-installation">Instalaciones eléctricas</h3>
+              <div class="service__diagram" aria-hidden="true">
+                <div class="service__diagram-meta"><span>SERVICE 01 / INSTALL</span><span>01—03</span></div>
+                <svg class="service__schematic" viewBox="0 0 360 160" fill="none" aria-hidden="true" focusable="false">
+                  <g class="service__guide">
+                    <path d="M8 18V8h10 M342 8h10v10 M8 142v10h10 M342 152h10v-10" />
+                  </g>
+                  <g class="service__trace">
+                    <path d="M28 80H140 M140 80V30h114 M140 80h166" />
+                    <path class="service__detail" d="M140 80v50h114" />
+                    <circle cx="28" cy="80" r="4" /><rect x="131" y="71" width="18" height="18" />
+                    <circle cx="254" cy="30" r="4" /><circle cx="306" cy="80" r="4" /><circle class="service__detail" cx="254" cy="130" r="4" />
+                  </g>
+                  <g data-service-live>
+                    <g class="service__wire">
+                      <path data-service-path d="M28 80H140" />
+                      <path data-service-path d="M140 80V30h114" />
+                      <path data-service-path d="M140 80h166" />
+                      <path class="service__detail" data-service-path d="M140 80v50h114" />
+                    </g>
+                    <g class="service__node" data-service-node><circle cx="28" cy="80" r="4" /></g>
+                    <g class="service__node" data-service-node><rect x="131" y="71" width="18" height="18" /><path d="M137 76v8m6-8v8" /></g>
+                    <g class="service__node" data-service-node><circle cx="254" cy="30" r="4" /></g>
+                    <g class="service__node" data-service-node><circle cx="306" cy="80" r="4" /></g>
+                    <g class="service__node service__detail" data-service-node><circle cx="254" cy="130" r="4" /></g>
+                    <g class="service__label">
+                      <text data-service-label x="16" y="62">FEED</text>
+                      <text data-service-label x="122" y="108">PANEL</text>
+                      <text data-service-label x="268" y="34">LIGHT</text>
+                      <text data-service-label x="294" y="62">LOAD</text>
+                      <text class="service__detail" data-service-label x="268" y="134">CTRL</text>
+                    </g>
+                    <text class="service__note service__detail" data-service-label x="16" y="105">240 V</text>
+                  </g>
+                </svg>
+              </div>
+              <p class="service__body">
                 Instalaciones nuevas, ampliaciones y remodelaciones con materiales y ejecución
                 coordinados en un mismo servicio.
               </p>
-              <span class="service__action" data-reveal-item>
-                <a class="arrow-link" href="#contacto">
+              <span class="service__action">
+                <a class="arrow-link" href="#contacto" aria-describedby="service-installation">
                   Cotizar
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
                   </svg>
                 </a>
               </span>
+              <span class="service__cursor" aria-hidden="true"></span>
             </li>
 
-            <li class="service grow-line" data-reveal>
-              <span class="service__index" data-reveal-item>02</span>
-              <h3 class="h3" data-reveal-item>Mantenimiento y soporte</h3>
-              <p class="service__body" data-reveal-item>
+            <li class="service" data-service="maintenance">
+              <span class="service__index">02</span>
+              <h3 class="h3" id="service-maintenance">Mantenimiento y soporte</h3>
+              <div class="service__diagram" aria-hidden="true">
+                <div class="service__diagram-meta"><span>SERVICE 02 / INSPECT</span><span>01—03</span></div>
+                <svg class="service__schematic" viewBox="0 0 360 160" fill="none" aria-hidden="true" focusable="false">
+                  <g class="service__guide"><path d="M8 18V8h10 M342 8h10v10 M8 142v10h10 M342 152h10v-10" /></g>
+                  <g class="service__trace">
+                    <path d="M28 74h296 M64 88v16 M180 88v16 M292 88v16" />
+                    <circle cx="64" cy="74" r="10" /><circle cx="180" cy="74" r="10" /><circle cx="292" cy="74" r="10" />
+                  </g>
+                  <g data-service-live>
+                    <path class="service__wire" data-service-path d="M28 74h296" />
+                    <g class="service__node" data-service-node><circle cx="64" cy="74" r="10" /></g>
+                    <g class="service__node" data-service-node><circle cx="180" cy="74" r="10" /></g>
+                    <g class="service__node" data-service-node><circle cx="292" cy="74" r="10" /></g>
+                    <g class="service__label" text-anchor="middle">
+                      <text data-service-label x="64" y="44">01</text>
+                      <text data-service-label x="180" y="44">02</text>
+                      <text data-service-label x="292" y="44">03</text>
+                    </g>
+                    <g class="service__verified" data-service-check>
+                      <path d="m60 74 3 3 5-6" /><text x="64" y="121">OK</text>
+                    </g>
+                    <g class="service__verified" data-service-check>
+                      <path d="m176 74 3 3 5-6" /><text x="180" y="121">OK</text>
+                    </g>
+                    <g class="service__verified" data-service-check>
+                      <path d="m288 74 3 3 5-6" /><text x="292" y="121">OK</text>
+                    </g>
+                    <text class="service__pending service__label" data-service-pending x="292" y="121" text-anchor="middle">CHECK</text>
+                    <g class="service__scanner" data-service-scanner>
+                      <path d="M24 55h8l-4 5Z" /><path d="M28 63v22" />
+                    </g>
+                  </g>
+                  <text class="service__note service__detail" x="28" y="148">LINE 02 / STATUS</text>
+                </svg>
+              </div>
+              <p class="service__body">
                 Revisión, diagnóstico y mejora de instalaciones existentes. Corregimos lo necesario
                 y reemplazamos solo donde hace falta.
               </p>
-              <span class="service__action" data-reveal-item>
-                <a class="arrow-link" href="#contacto">
+              <span class="service__action">
+                <a class="arrow-link" href="#contacto" aria-describedby="service-maintenance">
                   Cotizar
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
                   </svg>
                 </a>
               </span>
+              <span class="service__cursor" aria-hidden="true"></span>
             </li>
 
-            <li class="service grow-line" data-reveal>
-              <span class="service__index" data-reveal-item>03</span>
-              <h3 class="h3" data-reveal-item>Proyectos a medida</h3>
-              <p class="service__body" data-reveal-item>
+            <li class="service" data-service="custom">
+              <span class="service__index">03</span>
+              <h3 class="h3" id="service-custom">Proyectos a medida</h3>
+              <div class="service__diagram" aria-hidden="true">
+                <div class="service__diagram-meta"><span>SERVICE 03 / CUSTOM</span><span>01—05</span></div>
+                <svg class="service__schematic" viewBox="0 0 360 160" fill="none" aria-hidden="true" focusable="false">
+                  <g class="service__guide"><path d="M8 18V8h10 M342 8h10v10 M8 142v10h10 M342 152h10v-10" /></g>
+                  <g class="service__trace">
+                    <path d="M64 42h104 M178 52v58 M188 120h98" />
+                    <path class="service__detail" d="M54 52v58 M64 120h104" />
+                    <rect x="44" y="32" width="20" height="20" /><rect x="168" y="32" width="20" height="20" />
+                    <rect class="service__detail" x="44" y="110" width="20" height="20" /><rect x="168" y="110" width="20" height="20" />
+                    <rect x="286" y="110" width="20" height="20" />
+                  </g>
+                  <g data-service-live>
+                    <g class="service__wire">
+                      <path data-service-path d="M64 42h104" />
+                      <path class="service__detail" data-service-path d="M54 52v58" />
+                      <path data-service-path d="M178 52v58" />
+                      <path class="service__detail" data-service-path d="M64 120h104" />
+                      <path data-service-path d="M188 120h98" />
+                    </g>
+                    <g class="service__node" data-service-node><rect x="44" y="32" width="20" height="20" /><path d="M49 39h10m-10 6h6" /></g>
+                    <g class="service__node" data-service-node><rect x="168" y="32" width="20" height="20" /><path d="m173 45 10-6" /></g>
+                    <g class="service__node service__detail" data-service-node><rect x="44" y="110" width="20" height="20" /><path d="M50 115v10m8-10v10" /></g>
+                    <g class="service__node" data-service-node><rect x="168" y="110" width="20" height="20" /><path d="M173 120h10m-5-5v10" /></g>
+                    <g class="service__node service__node--output" data-service-node><rect x="286" y="110" width="20" height="20" /><path d="m291 120 3 3 6-7" /></g>
+                    <g class="service__label">
+                      <text data-service-label x="44" y="22">REQ</text>
+                      <text data-service-label x="168" y="22">DESIGN</text>
+                      <text class="service__detail" data-service-label x="44" y="149">BUILD</text>
+                      <text data-service-label x="168" y="149">LINK</text>
+                      <text data-service-label x="276" y="97">SYSTEM</text>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+              <p class="service__body">
                 Te ayudamos a definir materiales, alcance y ejecución según las necesidades reales
                 del proyecto.
               </p>
-              <span class="service__action" data-reveal-item>
-                <a class="arrow-link" href="#contacto">
+              <span class="service__action">
+                <a class="arrow-link" href="#contacto" aria-describedby="service-custom">
                   Cotizar
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" />
                   </svg>
                 </a>
               </span>
+              <span class="service__cursor" aria-hidden="true"></span>
             </li>
           </ul>
         </div>
@@ -359,31 +473,124 @@
             </h2>
           </div>
 
-          <div class="solutions__split" data-reveal style="margin-top: clamp(2.5rem, 7vh, 4.5rem)">
-            <div class="solution" data-reveal-item>
+          <!-- Blueprints are decorative: every fact they show is in the lists.
+               data-bp-link on a list item names the [data-bp] group it lights up. -->
+          <div
+            class="solutions__split"
+            data-reveal
+            data-solutions
+            style="margin-top: clamp(2.5rem, 7vh, 4.5rem)"
+          >
+            <div class="solution" data-reveal-item data-space="res">
               <h3 class="h3">Residencial</h3>
               <p class="lede" style="margin-top: 1rem">
                 Soluciones para construir, ampliar, renovar o mejorar la instalación eléctrica de tu
                 hogar.
               </p>
+              <div class="bp" aria-hidden="true">
+                <svg class="bp__svg" viewBox="0 0 320 220" focusable="false">
+                  <g data-bp="shell">
+                    <path class="bp__wall" pathLength="1" style="--d: 150ms" d="M40 20 H280 V160 H40 Z" />
+                    <circle class="bp__ring" cx="40" cy="20" r="9" />
+                    <text class="bp__label bp__label--base" style="--d: 300ms" x="40" y="11">RES-01</text>
+                  </g>
+                  <g data-bp="rooms">
+                    <path
+                      class="bp__wall"
+                      pathLength="1"
+                      style="--d: 350ms"
+                      d="M150 20 V66 M150 104 V160 M40 92 H124 M188 92 H280"
+                    />
+                    <circle class="bp__ring" cx="150" cy="85" r="9" />
+                  </g>
+                  <g data-bp="panel">
+                    <path class="bp__panel" pathLength="1" style="--d: 600ms" d="M148 176 H172 V192 H148 Z" />
+                    <path class="bp__feed" pathLength="1" style="--d: 800ms" d="M160 176 V80" />
+                    <circle class="bp__ring" cx="160" cy="184" r="13" />
+                    <text class="bp__label bp__label--base" style="--d: 700ms" x="180" y="187">PANEL</text>
+                    <text class="bp__label" style="--d: 700ms" x="166" y="150" data-lite>120V</text>
+                  </g>
+                  <g data-bp="points">
+                    <path class="bp__wire" pathLength="1" style="--d: 60ms" d="M160 80 H100 V56" />
+                    <path class="bp__wire" pathLength="1" style="--d: 60ms" d="M160 80 H220 V56" />
+                    <path class="bp__wire" pathLength="1" style="--d: 180ms" d="M160 124 H70 V137" data-lite />
+                    <path class="bp__wire" pathLength="1" style="--d: 180ms" d="M160 124 H250 V137" data-lite />
+                    <circle class="bp__node" style="--d: 0ms" cx="160" cy="80" r="2.5" />
+                    <g class="bp__node" style="--d: 420ms">
+                      <circle cx="100" cy="50" r="5.5" />
+                      <path d="M96 46 l8 8 m0 -8 l-8 8" />
+                    </g>
+                    <g class="bp__node" style="--d: 480ms">
+                      <circle cx="220" cy="50" r="5.5" />
+                      <path d="M216 46 l8 8 m0 -8 l-8 8" />
+                    </g>
+                    <rect class="bp__node" style="--d: 560ms" x="64" y="137" width="12" height="6" data-lite />
+                    <rect class="bp__node" style="--d: 620ms" x="244" y="137" width="12" height="6" data-lite />
+                    <circle class="bp__ring" cx="100" cy="50" r="10" />
+                    <text class="bp__label" style="--d: 660ms" x="110" y="42">LIGHT</text>
+                    <text class="bp__label" style="--d: 760ms" x="80" y="143" data-lite>OUTLET</text>
+                  </g>
+                </svg>
+              </div>
               <ul class="solution__list">
-                <li>Obra nueva y ampliaciones</li>
-                <li>Remodelaciones</li>
-                <li>Tableros y circuitos</li>
-                <li>Iluminación y puntos nuevos</li>
+                <li data-bp-link="shell">Obra nueva y ampliaciones</li>
+                <li data-bp-link="rooms">Remodelaciones</li>
+                <li data-bp-link="panel">Tableros y circuitos</li>
+                <li data-bp-link="points">Iluminación y puntos nuevos</li>
               </ul>
             </div>
 
-            <div class="solution" data-reveal-item>
+            <div class="solution" data-reveal-item data-space="com">
               <h3 class="h3">Comercial</h3>
               <p class="lede" style="margin-top: 1rem">
                 Soluciones eléctricas para locales, oficinas y espacios de trabajo.
               </p>
+              <div class="bp" aria-hidden="true">
+                <svg class="bp__svg" viewBox="0 0 320 220" focusable="false">
+                  <g data-bp="bays">
+                    <path class="bp__wall" pathLength="1" style="--d: 150ms" d="M30 20 H290 V118 H30 Z" />
+                    <path class="bp__wire" pathLength="1" style="--d: 260ms" d="M73 134 V56" />
+                    <path class="bp__wire" pathLength="1" style="--d: 340ms" d="M160 134 V56" />
+                    <path class="bp__wire" pathLength="1" style="--d: 420ms" d="M247 134 V56" />
+                    <rect class="bp__node" style="--d: 560ms" x="61" y="48" width="24" height="8" />
+                    <rect class="bp__node" style="--d: 640ms" x="148" y="48" width="24" height="8" />
+                    <rect class="bp__node" style="--d: 720ms" x="235" y="48" width="24" height="8" />
+                    <circle class="bp__ring" cx="160" cy="52" r="16" />
+                    <text class="bp__label bp__label--base" style="--d: 300ms" x="30" y="11">COM-01</text>
+                    <text class="bp__label" style="--d: 800ms" x="61" y="40" data-lite>LOAD</text>
+                  </g>
+                  <g data-bp="partitions">
+                    <path class="bp__wall" pathLength="1" style="--d: 380ms" d="M117 20 V118 M203 20 V118" />
+                    <circle class="bp__ring" cx="117" cy="69" r="9" />
+                  </g>
+                  <g data-bp="panel">
+                    <path class="bp__panel" pathLength="1" style="--d: 600ms" d="M136 150 H184 V174 H136 Z" />
+                    <path class="bp__feed" pathLength="1" style="--d: 780ms" d="M160 212 V174" />
+                    <path class="bp__feed" pathLength="1" style="--d: 900ms" d="M160 150 V134" />
+                    <path class="bp__wire" pathLength="1" style="--d: 0ms" d="M160 134 H73" />
+                    <path class="bp__wire" pathLength="1" style="--d: 0ms" d="M160 134 H270" />
+                    <rect class="bp__node" style="--d: 180ms" x="70" y="131" width="6" height="6" />
+                    <rect class="bp__node" style="--d: 220ms" x="157" y="131" width="6" height="6" />
+                    <rect class="bp__node" style="--d: 260ms" x="244" y="131" width="6" height="6" />
+                    <circle class="bp__ring" cx="160" cy="162" r="16" />
+                    <text class="bp__label bp__label--base" style="--d: 700ms" x="192" y="165">PANEL</text>
+                    <text class="bp__label bp__label--base" style="--d: 900ms" x="167" y="206">FEED</text>
+                    <text class="bp__label" style="--d: 500ms" x="200" y="128" data-lite>240V</text>
+                  </g>
+                  <g data-bp="ctrl">
+                    <path class="bp__wire" pathLength="1" style="--d: 380ms" d="M270 134 V150" />
+                    <rect class="bp__node" style="--d: 560ms" x="265" y="150" width="10" height="10" />
+                    <circle class="bp__ring" cx="270" cy="155" r="10" />
+                    <text class="bp__label" style="--d: 860ms" x="281" y="158">CTRL</text>
+                  </g>
+                </svg>
+                <span class="solutions__joint"></span>
+              </div>
               <ul class="solution__list">
-                <li>Locales y oficinas</li>
-                <li>Adecuación de espacios</li>
-                <li>Distribución y tableros</li>
-                <li>Mantenimiento programado</li>
+                <li data-bp-link="bays">Locales y oficinas</li>
+                <li data-bp-link="partitions">Adecuación de espacios</li>
+                <li data-bp-link="panel">Distribución y tableros</li>
+                <li data-bp-link="ctrl">Mantenimiento programado</li>
               </ul>
             </div>
           </div>

@@ -209,8 +209,16 @@ body {
 }
 
 @media (max-width: 899px) {
+  /* the overlay pins beats to the bottom on phones; the sentence is the headline,
+     so it takes the middle of the screen and most of its width */
   .beat--phrase {
     justify-self: stretch;
+    align-self: center;
+  }
+
+  .phrase {
+    font-size: clamp(2.6rem, 14vw, 6rem);
+    line-height: 0.98;
   }
 }
 
@@ -228,6 +236,7 @@ body {
 
   .beat--brand {
     justify-self: center;
+    align-self: center;
     text-align: center;
   }
 

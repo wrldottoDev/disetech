@@ -1,9 +1,13 @@
 import { initHero } from './hero/hero.js';
 import { initNavbar } from './navbar/navbar.js';
 import { initReveals } from './sections/reveals.js';
+import { initCircuit } from './sections/circuit.js';
 import { initMaterials } from './sections/materials.js';
 import { initMarquee } from './sections/marquee.js';
 import { initDepth } from './sections/depth.js';
+import { initInstallation } from './sections/installation.js';
+import { initServices } from './sections/services.js';
+import { initSolutions } from './sections/solutions.js';
 import { initContactForm } from './form/contactForm.js';
 
 function boot() {
@@ -14,6 +18,19 @@ function boot() {
   initHero(document.querySelector('[data-hero]'));
   initReveals();
   initMaterials();
+  const disposeCircuit = initCircuit();
+  const disposeInstallation = initInstallation();
+  const disposeServices = initServices();
+  const disposeSolutions = initSolutions();
+  const onPageHide = (event) => {
+    if (event.persisted) return;
+    disposeCircuit();
+    disposeInstallation();
+    disposeServices();
+    disposeSolutions();
+    window.removeEventListener('pagehide', onPageHide);
+  };
+  window.addEventListener('pagehide', onPageHide);
   initMarquee();
   initDepth();
   initContactForm();

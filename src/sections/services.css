@@ -1,0 +1,219 @@
+/* Services owns its interaction and entrance; all dimensions stay in CSS. */
+.services .service {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'index' 'title' 'diagram' 'body' 'action';
+  gap: 1rem;
+  align-items: start;
+  background: transparent;
+  transition: none;
+}
+
+.services .service::after {
+  background: linear-gradient(90deg, var(--green), transparent 85%);
+  opacity: 0;
+  transform: scaleX(0.94);
+  transform-origin: left;
+  transition: opacity 220ms ease, transform 320ms var(--ease-out);
+}
+
+.services .service.is-active::after,
+.services .service:focus-within::after {
+  opacity: 0.6;
+  transform: scaleX(1);
+}
+
+.services .service__index {
+  grid-area: index;
+  padding-top: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.services .service > .h3 { grid-area: title; }
+
+.services .service__body {
+  grid-area: body;
+  max-width: 48ch;
+  font-size: 0.94rem;
+}
+
+.services .service__action {
+  grid-area: action;
+  padding-top: 0;
+}
+
+.services .service__action .arrow-link {
+  position: relative;
+  min-height: 44px;
+  transition: color 200ms ease;
+}
+
+.services .service__action .arrow-link::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 1px;
+  background: var(--green);
+  opacity: 0;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: opacity 200ms ease, transform 260ms var(--ease-out);
+}
+
+.services .service.is-active .arrow-link::after,
+.services .service:focus-within .arrow-link::after {
+  opacity: 0.5;
+  transform: scaleX(1);
+}
+
+.services .service.is-active .arrow-link svg { transform: translateX(4px); }
+
+.services .service__diagram {
+  grid-area: diagram;
+  align-self: center;
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+  margin: 0.75rem 0;
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 220ms ease;
+}
+
+.services .service.is-active .service__diagram,
+.services .service:focus-within .service__diagram { opacity: 1; }
+
+.services .service__diagram-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--gray);
+  font-family: var(--font-display);
+  font-size: 0.57rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  opacity: 0.6;
+}
+
+.services .service__schematic {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 4;
+  overflow: visible;
+}
+
+.services .service__schematic :is(path, circle, rect) {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1;
+}
+
+.services .service__guide { stroke: var(--rule-strong); }
+.services .service__trace { stroke: var(--gray); opacity: 0.28; }
+.services .service__trace :is(circle, rect) { fill: var(--bg); }
+.services .service__wire { stroke: var(--green); opacity: 0.65; }
+.services .service__node { stroke: var(--green); fill: var(--bg); }
+.services .service__node path { stroke: var(--gray); }
+.services .service__node--output path { stroke: var(--green); }
+.services [data-service='maintenance'] .service__node { stroke: var(--gray); }
+
+.services .service__label,
+.services .service__note,
+.services .service__verified text {
+  fill: var(--gray);
+  stroke: none;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.services .service__note { font-size: 8px; opacity: 0.6; }
+.services .service__verified { stroke: var(--green); }
+.services .service__verified text { fill: var(--green); text-anchor: middle; font-size: 9px; }
+.services .service__scanner { stroke: var(--green); opacity: 0; }
+.services .service__scanner path:first-child { fill: var(--green); stroke: none; }
+.services .service__pending { opacity: 0; }
+
+/* The complete diagrams are the fallback when JS or the CDN is unavailable. */
+.services--animated [data-service-live] { opacity: 0; }
+.services .service__cursor { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .services .service > :is(.service__index, .h3, .service__body, .service__action) {
+    transition: opacity 220ms ease;
+  }
+
+  .services--engaged .service:not(.is-active):not(:focus-within) > :is(.service__index, .h3, .service__body, .service__action) {
+    opacity: 0.48;
+  }
+
+  /* Secondary text needs more contrast than the white headings when dimmed. */
+  .services--engaged .service:not(.is-active):not(:focus-within) > .service__body {
+    opacity: 0.72;
+  }
+
+  .services--engaged .service:not(.is-active):not(:focus-within) > .service__index {
+    opacity: 0.68;
+  }
+
+  .services--engaged .service:not(.is-active):not(:focus-within) .service__diagram {
+    opacity: 0.4;
+  }
+
+  .services--animated .service__cursor {
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--green);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .services--animated .service.is-active.is-tracking .service__cursor { opacity: 0.65; }
+}
+
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  .services .service {
+    grid-template-columns: 2.5rem minmax(0, 1.1fr) minmax(240px, 1fr) auto;
+    grid-template-rows: auto auto;
+    grid-template-areas: 'index title diagram action' '. body diagram action';
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    row-gap: 0.85rem;
+    padding-block: clamp(2rem, 4vh, 3rem);
+  }
+
+  .services .service__index { padding-top: 0.5rem; }
+  .services .service > .h3 { align-self: end; }
+  .services .service__diagram { margin: 0; }
+  .services .service__action { align-self: center; }
+}
+
+@media (max-width: 599px) {
+  .services .service__detail,
+  .services .service__guide,
+  .services .service__diagram-meta > :last-child { display: none; }
+
+  .services .service__diagram-meta { margin-bottom: 0.5rem; }
+  .services .service__label { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services .service::after,
+  .services .service .arrow-link::after,
+  .services .service .arrow-link svg {
+    transform: none;
+    transition: opacity 150ms ease;
+  }
+
+  .services .service.is-active .arrow-link svg { transform: none; }
+  .services .service__cursor { display: none; }
+}

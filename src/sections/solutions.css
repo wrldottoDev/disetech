@@ -1,0 +1,332 @@
+/*
+  Residencial / Comercial — "same technical base, two applications".
+
+  States, all driven by classes on the markup:
+    .is-live      solutions.js is running (without it: static, complete)
+    .is-revealed  reveals.js saw the split: structure + feed draw, divider grows
+    .is-drawn     per half: circuit detail draws (first hover / mid-screen)
+    --bp-hot      set on a blueprint group while its list item is hovered
+
+  Paths use pathLength="1", so every draw is dasharray 1 / dashoffset 1 → 0
+  with no length measuring in JS.
+*/
+
+.solution {
+  --pad: clamp(1.5rem, 3vw, 3rem);
+  padding-inline: var(--pad);
+}
+
+/* ------------------------------------------------------------ blueprint -- */
+
+.bp {
+  position: relative; /* the divider joint sits on the Comercial drawing's midline */
+  width: min(100%, 340px);
+  margin-top: clamp(1.5rem, 4vh, 2.25rem);
+  opacity: 0.8;
+  transition: opacity 320ms var(--ease-out);
+}
+
+.bp__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke-width: 1;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+.bp [data-bp] {
+  transition: opacity 220ms ease;
+}
+
+.bp__wall {
+  stroke: var(--gray);
+  stroke-opacity: calc(0.3 + 0.5 * var(--bp-hot, 0));
+  transition:
+    stroke-dashoffset 900ms var(--ease-out) var(--d, 0ms),
+    stroke-opacity 200ms ease;
+}
+
+.bp__panel,
+.bp__feed,
+.bp__wire {
+  stroke: var(--green);
+  stroke-opacity: calc(0.55 + 0.45 * var(--bp-hot, 0));
+  transition:
+    stroke-dashoffset 520ms var(--ease-out) var(--d, 0ms),
+    stroke-opacity 200ms ease;
+}
+
+.bp__wire {
+  transition-duration: 420ms, 200ms;
+}
+
+.bp__node {
+  stroke: var(--green);
+  fill: var(--green);
+  fill-opacity: var(--bp-hot, 0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 260ms var(--ease-out) var(--d, 0ms),
+    transform 380ms var(--ease-out) var(--d, 0ms),
+    fill-opacity 200ms ease;
+}
+
+.bp__node path {
+  fill: none;
+}
+
+.bp__label {
+  fill: var(--gray);
+  fill-opacity: calc(0.45 + 0.5 * var(--bp-hot, 0));
+  stroke: none;
+  font-family: var(--font-body);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  transition:
+    opacity 400ms var(--ease-out) var(--d, 0ms),
+    fill-opacity 200ms ease;
+}
+
+.bp__ring {
+  stroke: var(--green);
+  opacity: calc(0.45 * var(--bp-hot, 0));
+  transform: scale(calc(0.5 + 0.5 * var(--bp-hot, 0)));
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 220ms ease,
+    transform 420ms var(--ease-out);
+}
+
+/* hidden states exist only while JS is alive to lift them */
+.is-live .bp__wall,
+.is-live .bp__panel,
+.is-live .bp__feed,
+.is-live .bp__wire {
+  stroke-dasharray: 1;
+}
+
+.is-live:not(.is-revealed) .bp__wall,
+.is-live:not(.is-revealed) .bp__panel,
+.is-live:not(.is-revealed) .bp__feed,
+.is-live .solution:not(.is-drawn) .bp__wire {
+  stroke-dashoffset: 1;
+}
+
+.is-live:not(.is-revealed) .bp__label--base,
+.is-live .solution:not(.is-drawn) .bp__label:not(.bp__label--base) {
+  opacity: 0;
+}
+
+.is-live .solution:not(.is-drawn) .bp__node {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+/* ------------------------------------------------- divider + joint (≥900) -- */
+
+@media (min-width: 900px) {
+  .solutions__split .solution + .solution {
+    border-left: 0;
+  }
+
+  .solutions__split .solution + .solution::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    background: var(--rule-strong);
+    transform-origin: top;
+    transition: transform 700ms var(--ease-out);
+  }
+
+  .is-live:not(.is-revealed) .solution + .solution::after {
+    transform: scaleY(0);
+  }
+}
+
+.solutions__joint {
+  display: none;
+}
+
+/* Subgrid lines the four rows (title, copy, blueprint, list) up across both
+   halves, so the joint can sit level with both blueprints. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 900px) {
+    .solutions__split {
+      grid-template-rows: repeat(4, auto);
+    }
+
+    .solution {
+      display: grid;
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+      align-content: start;
+    }
+
+    .solutions__joint {
+      display: block;
+      position: absolute;
+      top: calc(50% - 3.5px);
+      left: calc(-1 * var(--pad) - 3px);
+      width: 7px;
+      height: 7px;
+      border: 1px solid var(--green);
+      background: var(--bg);
+      transition: opacity 300ms ease 500ms;
+    }
+
+    .solutions__joint::before,
+    .solutions__joint::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      width: 28px;
+      height: 1px;
+      background: var(--green);
+      opacity: 0.5;
+      transition: transform 600ms var(--ease-out) 650ms;
+    }
+
+    .solutions__joint::before {
+      right: calc(100% + 4px);
+      transform-origin: right;
+    }
+
+    .solutions__joint::after {
+      left: calc(100% + 4px);
+      transform-origin: left;
+    }
+
+    .is-live:not(.is-revealed) .solutions__joint {
+      opacity: 0;
+    }
+
+    .is-live:not(.is-revealed) .solutions__joint::before,
+    .is-live:not(.is-revealed) .solutions__joint::after {
+      transform: scaleX(0);
+    }
+  }
+}
+
+/* ------------------------------------------------------ desktop pointer -- */
+
+@media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+  /* the inactive half recedes but must still read as live content. Specificity
+     matches the reveal rule that pins revealed items at opacity 1. */
+  .solutions__split:hover > .solution:not(:hover) {
+    opacity: 0.62;
+  }
+
+  .solution:hover .bp {
+    opacity: 1;
+  }
+
+  .solution__list [data-bp-link] {
+    position: relative;
+    transition: color 200ms ease;
+  }
+
+  .solution__list [data-bp-link]::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -0.9rem;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    background: var(--green);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity 200ms ease,
+      transform 260ms var(--ease-out);
+  }
+
+  .solution__list [data-bp-link]:hover {
+    color: var(--white);
+  }
+
+  .solution__list [data-bp-link]:hover::before {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* list item → its part of the blueprint; the rest of the drawing steps back */
+  .solution:has([data-bp-link]:hover) .bp [data-bp] {
+    opacity: 0.45;
+  }
+
+  .solution:has([data-bp-link='shell']:hover) .bp [data-bp='shell'],
+  .solution:has([data-bp-link='rooms']:hover) .bp [data-bp='rooms'],
+  .solution:has([data-bp-link='points']:hover) .bp [data-bp='points'],
+  .solution:has([data-bp-link='bays']:hover) .bp [data-bp='bays'],
+  .solution:has([data-bp-link='partitions']:hover) .bp [data-bp='partitions'],
+  .solution:has([data-bp-link='panel']:hover) .bp [data-bp='panel'],
+  .solution:has([data-bp-link='ctrl']:hover) .bp [data-bp='ctrl'] {
+    --bp-hot: 1;
+    opacity: 1;
+  }
+}
+
+/* 56 / 44 — layout animation, kept to two tracks and one property */
+@media (hover: hover) and (pointer: fine) and (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  /* [data-reveal] matches the reveal rule's specificity, so this list replaces
+     its transition instead of losing to it — hence repeating its two entries */
+  .solutions__split[data-reveal] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    transition:
+      opacity var(--reveal-dur) var(--ease-out),
+      transform var(--reveal-dur) var(--ease-out),
+      grid-template-columns 560ms var(--ease-out);
+  }
+
+  .solutions__split:has(> [data-space='res']:hover) {
+    grid-template-columns: minmax(0, 1.27fr) minmax(0, 1fr);
+  }
+
+  .solutions__split:has(> [data-space='com']:hover) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.27fr);
+  }
+}
+
+/* --------------------------------------------------------------- mobile -- */
+
+@media (max-width: 899px) {
+  /* title, then the drawing, then the copy: each half reads on its own */
+  .solution {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .solution > * {
+    order: 2;
+  }
+
+  .solution > .h3 {
+    order: 0;
+  }
+
+  .solution > .bp {
+    order: 1;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 599px) {
+  .bp {
+    width: min(100%, 300px);
+  }
+
+  /* a shorter route, not the desktop drawing shrunk */
+  .bp [data-lite] {
+    display: none;
+  }
+}
