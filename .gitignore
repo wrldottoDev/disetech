@@ -6,5 +6,5 @@ node_modules/
 data/
 
 # Source masters. Never shipped — the site uses the WebP in assets/.
-frames/
-source-images/
+/frames/
+/source-images/
