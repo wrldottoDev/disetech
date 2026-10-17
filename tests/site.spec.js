@@ -15,12 +15,17 @@ const SECTIONS = {
   contacto: 'Contacto',
 };
 
-/** Walk the page top to bottom so lazy images load and every reveal fires. */
+/** Walk the page top to bottom so lazy images load and every reveal fires.
+ *  Each stop waits for two painted frames, not a fixed time: a starved browser
+ *  (four engines in parallel) can otherwise jump a section past the observer. */
 async function scrollThrough(page) {
   await page.evaluate(async () => {
+    const frame = () => new Promise((resolve) => requestAnimationFrame(resolve));
     for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight / 2) {
       window.scrollTo({ top: y, behavior: 'instant' });
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      await frame();
+      await frame();
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   });
 }
@@ -71,12 +76,29 @@ test('servidor: publica el sitio y nada más', async ({ request }) => {
   }
 });
 
-test('hero: el video se reproduce una vez y queda en el tablero', async ({ page }) => {
+test('hero: el diagrama se energiza, queda encendido y no pisa el titular', async ({ page }) => {
   await page.goto('/');
-  const hero = page.locator('[data-hero]');
-  await expect(hero).toHaveClass(/is-ready/);
-  await expect(hero).toHaveClass(/is-ended/, { timeout: 15_000 });
-  expect(await page.locator('[data-hero-video]').evaluate((video) => video.loop)).toBe(false);
+  const diagram = page.locator('.sld');
+
+  // every one-shot animation runs to its end; only the current pulses keep going
+  await expect
+    .poll(() =>
+      diagram.evaluate((svg) =>
+        svg
+          .getAnimations({ subtree: true })
+          .filter((a) => a.effect.getTiming().iterations !== Infinity && a.playState !== 'finished').length,
+      ),
+      { timeout: 10_000 },
+    )
+    .toBe(0);
+  // main breaker and the nine circuit breakers, all closed
+  expect(await diagram.locator('.blade').evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))).toEqual(
+    Array(10).fill('none'),
+  );
+
+  const art = await diagram.boundingBox();
+  const title = await page.locator('#hero-title').boundingBox();
+  expect(art.y + art.height).toBeLessThanOrEqual(title.y);
 });
 
 test('navegación: cada enlace lleva a su sección', async ({ page, isMobile }) => {
@@ -232,8 +254,9 @@ test('movimiento reducido: todo visible y el hero quieto', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
 
-  await expect(page.locator('[data-hero]')).toHaveClass(/is-ready/);
-  expect(await page.locator('[data-hero-video]').evaluate((video) => video.paused)).toBe(true);
+  // the diagram is already on: no sequence, no pulses
+  expect(await page.locator('.sld').evaluate((svg) => svg.getAnimations({ subtree: true }).length)).toBe(0);
+  await expect(page.locator('.sld .pulse').first()).toBeHidden();
   await expect(page.locator('[data-reveal]:not(.is-revealed)')).toHaveCount(0);
   await expect(page.locator('html')).not.toHaveClass(/js-reveals/);
 });

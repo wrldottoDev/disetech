@@ -86,7 +86,6 @@ body {
 }
 
 img,
-video,
 svg {
   display: block;
   max-width: 100%;
@@ -533,7 +532,8 @@ svg {
 .hero {
   position: relative;
   display: grid;
-  align-items: end;
+  /* the diagram takes whatever the copy leaves, so the two never overlap */
+  grid-template-rows: minmax(15rem, 1fr) auto;
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
@@ -541,49 +541,134 @@ svg {
 }
 
 .hero__media {
+  position: relative;
+  z-index: -1;
+  /* scrolled away, the browser stops painting the running current */
+  content-visibility: auto;
+}
+
+.sld {
+  --wire: rgba(181, 183, 185, 0.3);
   position: absolute;
   inset: 0;
-  z-index: -1;
-}
-
-.hero__video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* hero.js lifts it in the frame playback starts, so frame 1 rises out of
-     the dark instead of popping in */
-  opacity: 0;
-  transition: opacity 1.4s var(--ease-expo);
+  max-width: none;
 }
 
-.hero.is-ready .hero__video {
-  opacity: 1;
+.sld path,
+.sld circle,
+.sld rect {
+  fill: none;
+  stroke: var(--wire);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* once it has landed on the panel, the shot keeps breathing */
-.hero.is-ended .hero__video {
-  animation: settle 24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.sld .on,
+.sld .blade,
+.sld .sym > :not(text, .led) {
+  stroke: var(--green);
 }
 
-@keyframes settle {
-  to {
-    transform: scale(1.06);
-  }
+/* the wiring glows a step below full green, so the running pulses read on it */
+.sld .on {
+  stroke-opacity: 0.7;
 }
 
-/* type sits bottom-left, so that is where the scene gives way */
+.sld .bus {
+  stroke-width: 3;
+}
+
+.sld .on,
+.sld .off {
+  stroke-dasharray: 1;
+}
+
+.sld .pin {
+  fill: var(--bg);
+}
+
+.sld .blade {
+  stroke-width: 2;
+  /* pivots on its top contact */
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+.sld .led {
+  fill: var(--green);
+  stroke: none;
+}
+
+.sld .halo,
+.sld__ambient {
+  fill: url(#sld-glow);
+  stroke: none;
+}
+
+.sld__ambient {
+  opacity: 0.55;
+}
+
+.sld text {
+  font-family: var(--font);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+}
+
+.sld__t {
+  fill: var(--gray-3);
+}
+
+.sld__t--dim {
+  fill: rgba(138, 142, 145, 0.7);
+}
+
+.sld__n {
+  fill: var(--gray);
+}
+
+.sld__m {
+  fill: var(--green);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.sld .hit {
+  fill: transparent;
+  stroke: none;
+}
+
+.sld .circuit:hover .on,
+.sld .circuit:hover .blade,
+.sld .circuit:hover .sym > :not(text, .led) {
+  stroke: var(--green-hi);
+}
+
+.sld .circuit:hover text {
+  fill: var(--white);
+}
+
+.sld .pulse {
+  display: none;
+}
+
+/* the feed comes down from under the bar; where the screen crops the bus,
+   it dissolves instead of stopping dead */
 .hero__media::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(0deg, var(--bg) 0%, rgba(11, 13, 14, 0.72) 34%, rgba(11, 13, 14, 0) 70%),
-    linear-gradient(90deg, rgba(11, 13, 14, 0.8) 0%, rgba(11, 13, 14, 0.35) 45%, rgba(11, 13, 14, 0) 70%),
-    linear-gradient(180deg, rgba(11, 13, 14, 0.6) 0%, rgba(11, 13, 14, 0) 18%);
+    linear-gradient(90deg, var(--bg) 0%, rgba(11, 13, 14, 0) 12%, rgba(11, 13, 14, 0) 88%, var(--bg) 100%),
+    linear-gradient(180deg, rgba(11, 13, 14, 0.7) 0%, rgba(11, 13, 14, 0) 22%);
 }
 
 .hero__content {
-  padding-top: calc(var(--nav-h) + 6rem);
+  padding-top: clamp(1.25rem, 4vh, 3rem);
   padding-bottom: clamp(2rem, 6vh, 4.5rem);
 }
 
@@ -634,11 +719,6 @@ svg {
 }
 
 @media (max-width: 767px) {
-  .hero__video {
-    /* portrait crop: keep the cable's path and the panel it lands on */
-    object-position: 58% 50%;
-  }
-
   .hero__title {
     font-stretch: 110%;
   }
@@ -647,8 +727,8 @@ svg {
 /* ------------------------------------------------------------ page load -- */
 /*
   One entrance, CSS only: the bar settles, the headline wipes up line by line,
-  the rule draws, then the copy and actions. The video fades in on its own
-  cue (above).
+  the rule draws, then the copy and actions. The diagram behind runs its own
+  sequence (below).
 */
 @keyframes line-up {
   from {
@@ -702,6 +782,123 @@ svg {
 
 .hero__actions {
   animation: rise 1s var(--ease-expo) 760ms both;
+}
+
+/*
+  The diagram: gray linework draws in (--t), then the current follows it in
+  green (--l): down the feed, out along the bus, through each breaker as it
+  closes, to the load, which lights. Then pulses keep running to every load.
+  Every rule here only animates *toward* the resting state, so with reduced
+  motion the diagram simply sits there, on.
+*/
+@keyframes sld-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes sld-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sld-close {
+  from {
+    transform: rotate(30deg);
+    stroke: var(--wire);
+  }
+}
+
+@keyframes sld-light {
+  from {
+    stroke: var(--wire);
+  }
+}
+
+@keyframes sld-led {
+  from {
+    fill: var(--gray-dark);
+  }
+}
+
+@keyframes sld-ink {
+  from {
+    fill: var(--gray-3);
+  }
+}
+
+@keyframes sld-pulse {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: -1100;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sld .off {
+    animation: sld-draw 0.55s var(--ease) var(--t) backwards;
+  }
+
+  .sld .off.bus {
+    animation-duration: 0.8s;
+  }
+
+  .sld .on {
+    animation: sld-draw 0.3s linear var(--l) backwards;
+  }
+
+  .sld .on.bus {
+    animation-duration: 0.6s;
+  }
+
+  .sld text,
+  .sld__ambient,
+  .sld .halo {
+    animation: sld-in 0.6s var(--ease) var(--t, var(--l)) backwards;
+  }
+
+  .sld .halo,
+  .sld__ambient {
+    animation-duration: 1.4s;
+  }
+
+  .sld .sym {
+    animation: sld-in 0.6s var(--ease) var(--t) backwards;
+  }
+
+  .sld .sym > :not(text, .led) {
+    animation: sld-light 0.4s var(--ease) var(--l) backwards;
+  }
+
+  .sld .led {
+    animation:
+      sld-in 0.6s var(--ease) var(--t) backwards,
+      sld-led 0.4s var(--ease) var(--l) backwards;
+  }
+
+  .sld .sld__m {
+    animation:
+      sld-in 0.6s var(--ease) var(--t) backwards,
+      sld-ink 0.4s var(--ease) var(--l) backwards;
+  }
+
+  .sld .blade {
+    animation:
+      sld-in 0.6s var(--ease) var(--t) backwards,
+      sld-close 0.45s var(--ease-expo) var(--l) backwards;
+  }
+
+  .sld .pulse {
+    display: inline;
+    stroke: var(--green);
+    stroke-width: 2.5;
+    stroke-dasharray: 24 1400;
+    stroke-dashoffset: 24;
+    animation: sld-pulse var(--p) linear var(--t) infinite;
+  }
 }
 
 /* ============================================================ SECTIONS ==== */
@@ -1932,12 +2129,10 @@ svg {
   .hero__foot::before,
   .hero__lede,
   .hero__actions,
-  .menu[open] .menu__links li,
-  .hero.is-ended .hero__video {
+  .menu[open] .menu__links li {
     animation: none;
   }
 
-  .hero__video,
   .menu,
   .services__media img,
   .services__bar,

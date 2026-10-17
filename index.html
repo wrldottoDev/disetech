@@ -40,9 +40,6 @@
     <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="src/styles.css" />
     <link rel="preload" as="image" href="assets/brand/disetech-logo.webp" />
-
-    <!-- without JS the hero video never gets its cue to fade in -->
-    <noscript><style>.hero__video { opacity: 1; }</style></noscript>
   </head>
 
   <body>
@@ -101,12 +98,187 @@
       <!-- ============================================================= HERO -->
       <section class="hero" id="inicio" data-hero aria-labelledby="hero-title">
         <div class="hero__media" aria-hidden="true">
-          <!-- Plays once on load and rests on the lit panel. hero.js starts it;
-               reduced motion gets the last frame as a still instead. -->
-          <video class="hero__video" data-hero-video muted playsinline preload="auto">
-            <source src="assets/video/hero-960.mp4" type="video/mp4" media="(max-width: 767px)" />
-            <source src="assets/video/hero.mp4" type="video/mp4" />
-          </video>
+          <!-- The installation as an electrician draws it: service drop, meter,
+               main breaker, bus, nine circuits. On load the lines draw, each
+               breaker closes and its circuit lights up, then current keeps
+               running to every load. CSS only; reduced motion gets it already on.
+               Circuit columns sit 150 units apart around the feed at x=800. -->
+          <svg class="sld" viewBox="0 0 1600 500" preserveAspectRatio="xMidYMax slice">
+            <defs>
+              <radialGradient id="sld-glow">
+                <stop offset="0" stop-color="#55f20d" stop-opacity=".32" />
+                <stop offset="1" stop-color="#55f20d" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <ellipse class="sld__ambient" cx="800" cy="268" rx="580" ry="215" style="--l: 1.45s" />
+            <g class="sld__feed">
+              <path class="off" pathLength="1" d="M800 0V96" style="--t: .1s" />
+              <path class="on" pathLength="1" d="M800 0V96" style="--l: 1.45s" />
+              <g class="sym" style="--t: .4s; --l: 1.7s"><circle cx="800" cy="120" r="24" /></g>
+              <text class="sld__t" x="800" y="124.5" text-anchor="middle" style="--t: .4s">kWh</text>
+              <text class="sld__t" x="836" y="124.5" style="--t: .5s">Medidor</text>
+              <path class="off" pathLength="1" d="M800 144V176" style="--t: .5s" />
+              <path class="on" pathLength="1" d="M800 144V176" style="--l: 1.8s" />
+              <g class="sym" style="--t: .55s; --l: 1.95s"><circle class="pin" cx="800" cy="180" r="3.5" /><circle class="pin" cx="800" cy="224" r="3.5" /></g>
+              <path class="blade" d="M800 180V224" style="--t: .55s; --l: 1.95s" />
+              <path class="led" d="M769 204.5h7l3 -5h-7z" style="--t: .6s; --l: 1.95s" />
+              <text class="sld__t" x="816" y="198" style="--t: .6s">Principal</text>
+              <text class="sld__t sld__t--dim" x="816" y="214" style="--t: .65s">2P · 100 A</text>
+              <path class="off" pathLength="1" d="M800 228V268" style="--t: .65s" />
+              <path class="on" pathLength="1" d="M800 228V268" style="--l: 2.15s" />
+              <path class="off bus" pathLength="1" d="M800 268H170" style="--t: .75s" />
+              <path class="off bus" pathLength="1" d="M800 268H1430" style="--t: .75s" />
+              <path class="on bus" pathLength="1" d="M800 268H170" style="--l: 2.25s" />
+              <path class="on bus" pathLength="1" d="M800 268H1430" style="--l: 2.25s" />
+              <text class="sld__t sld__t--dim" x="1430" y="256" text-anchor="end" style="--t: 1.2s">Barra 120/240 V</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="125" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M200 268V304" style="--t: 1.18s" />
+              <path class="on" pathLength="1" d="M200 268V304" style="--l: 2.87s" />
+              <g class="sym" style="--t: 1.28s; --l: 3.07s"><circle class="pin" cx="200" cy="308" r="3.5" /><circle class="pin" cx="200" cy="348" r="3.5" /></g>
+              <path class="blade" d="M200 308V348" style="--t: 1.28s; --l: 3.07s" />
+              <path class="led" d="M169 330.5h7l3 -5h-7z" style="--t: 1.33s; --l: 3.07s" />
+              <text class="sld__t" x="214" y="324" style="--t: 1.33s">C1</text>
+              <text class="sld__t sld__t--dim" x="214" y="340" style="--t: 1.38s">20 A</text>
+              <path class="off" pathLength="1" d="M200 352V396" style="--t: 1.28s" />
+              <path class="on" pathLength="1" d="M200 352V396" style="--l: 3.27s" />
+              <circle class="halo" cx="200" cy="414" r="54" style="--l: 3.47s" />
+              <g class="sym" style="--t: 1.38s; --l: 3.47s"><path d="M182 414a18 18 0 0 1 36 0z M194 404v6 M206 404v6" /></g>
+              <text class="sld__n" x="200" y="466" text-anchor="middle" style="--t: 1.43s">Tomacorrientes</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="275" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M350 268V304" style="--t: 1.11s" />
+              <path class="on" pathLength="1" d="M350 268V304" style="--l: 2.73s" />
+              <g class="sym" style="--t: 1.21s; --l: 2.93s"><circle class="pin" cx="350" cy="308" r="3.5" /><circle class="pin" cx="350" cy="348" r="3.5" /></g>
+              <path class="blade" d="M350 308V348" style="--t: 1.21s; --l: 2.93s" />
+              <path class="led" d="M319 330.5h7l3 -5h-7z" style="--t: 1.26s; --l: 2.93s" />
+              <text class="sld__t" x="364" y="324" style="--t: 1.26s">C2</text>
+              <text class="sld__t sld__t--dim" x="364" y="340" style="--t: 1.31s">15 A</text>
+              <path class="off" pathLength="1" d="M350 352V396" style="--t: 1.21s" />
+              <path class="on" pathLength="1" d="M350 352V396" style="--l: 3.13s" />
+              <circle class="halo" cx="350" cy="414" r="54" style="--l: 3.33s" />
+              <g class="sym" style="--t: 1.31s; --l: 3.33s"><circle cx="350" cy="414" r="18" /><path d="M337.3 401.3l25.4 25.4 M362.7 401.3l-25.4 25.4" /></g>
+              <text class="sld__n" x="350" y="466" text-anchor="middle" style="--t: 1.36s">Iluminación</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="425" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M500 268V304" style="--t: 1.04s" />
+              <path class="on" pathLength="1" d="M500 268V304" style="--l: 2.59s" />
+              <g class="sym" style="--t: 1.14s; --l: 2.79s"><circle class="pin" cx="500" cy="308" r="3.5" /><circle class="pin" cx="500" cy="348" r="3.5" /></g>
+              <path class="blade" d="M500 308V348" style="--t: 1.14s; --l: 2.79s" />
+              <path class="led" d="M469 330.5h7l3 -5h-7z" style="--t: 1.19s; --l: 2.79s" />
+              <text class="sld__t" x="514" y="324" style="--t: 1.19s">C3</text>
+              <text class="sld__t sld__t--dim" x="514" y="340" style="--t: 1.24s">40 A</text>
+              <path class="off" pathLength="1" d="M500 352V396" style="--t: 1.14s" />
+              <path class="on" pathLength="1" d="M500 352V396" style="--l: 2.99s" />
+              <circle class="halo" cx="500" cy="414" r="54" style="--l: 3.19s" />
+              <g class="sym" style="--t: 1.24s; --l: 3.19s"><rect x="482" y="396" width="36" height="36" rx="2" /><circle cx="492" cy="406" r="4.5" /><circle cx="508" cy="406" r="4.5" /><circle cx="492" cy="422" r="4.5" /><circle cx="508" cy="422" r="4.5" /></g>
+              <text class="sld__n" x="500" y="466" text-anchor="middle" style="--t: 1.29s">Cocina</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="575" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M650 268V304" style="--t: 0.97s" />
+              <path class="on" pathLength="1" d="M650 268V304" style="--l: 2.44s" />
+              <g class="sym" style="--t: 1.07s; --l: 2.64s"><circle class="pin" cx="650" cy="308" r="3.5" /><circle class="pin" cx="650" cy="348" r="3.5" /></g>
+              <path class="blade" d="M650 308V348" style="--t: 1.07s; --l: 2.64s" />
+              <path class="led" d="M619 330.5h7l3 -5h-7z" style="--t: 1.12s; --l: 2.64s" />
+              <text class="sld__t" x="664" y="324" style="--t: 1.12s">C4</text>
+              <text class="sld__t sld__t--dim" x="664" y="340" style="--t: 1.17s">15 A</text>
+              <path class="off" pathLength="1" d="M650 352V396" style="--t: 1.07s" />
+              <path class="on" pathLength="1" d="M650 352V396" style="--l: 2.84s" />
+              <circle class="halo" cx="650" cy="414" r="54" style="--l: 3.04s" />
+              <g class="sym" style="--t: 1.17s; --l: 3.04s"><circle cx="650" cy="414" r="18" /><path d="M637.3 401.3l25.4 25.4 M662.7 401.3l-25.4 25.4" /></g>
+              <text class="sld__n" x="650" y="466" text-anchor="middle" style="--t: 1.22s">Exteriores</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="725" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M800 268V304" style="--t: 0.9s" />
+              <path class="on" pathLength="1" d="M800 268V304" style="--l: 2.3s" />
+              <g class="sym" style="--t: 1s; --l: 2.5s"><circle class="pin" cx="800" cy="308" r="3.5" /><circle class="pin" cx="800" cy="348" r="3.5" /></g>
+              <path class="blade" d="M800 308V348" style="--t: 1s; --l: 2.5s" />
+              <path class="led" d="M769 330.5h7l3 -5h-7z" style="--t: 1.05s; --l: 2.5s" />
+              <text class="sld__t" x="814" y="324" style="--t: 1.05s">C5</text>
+              <text class="sld__t sld__t--dim" x="814" y="340" style="--t: 1.1s">60 A</text>
+              <path class="off" pathLength="1" d="M800 352V396" style="--t: 1s" />
+              <path class="on" pathLength="1" d="M800 352V396" style="--l: 2.7s" />
+              <circle class="halo" cx="800" cy="414" r="54" style="--l: 2.9s" />
+              <g class="sym" style="--t: 1.1s; --l: 2.9s"><rect x="778" y="396" width="44" height="32" rx="2" /><path class="led" d="M786 414.5h7l3 -5h-7z M797 414.5h7l3 -5h-7z M808 414.5h7l3 -5h-7z" /></g>
+              <text class="sld__n" x="800" y="466" text-anchor="middle" style="--t: 1.15s">Subtablero</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="875" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M950 268V304" style="--t: 0.97s" />
+              <path class="on" pathLength="1" d="M950 268V304" style="--l: 2.44s" />
+              <g class="sym" style="--t: 1.07s; --l: 2.64s"><circle class="pin" cx="950" cy="308" r="3.5" /><circle class="pin" cx="950" cy="348" r="3.5" /></g>
+              <path class="blade" d="M950 308V348" style="--t: 1.07s; --l: 2.64s" />
+              <path class="led" d="M919 330.5h7l3 -5h-7z" style="--t: 1.12s; --l: 2.64s" />
+              <text class="sld__t" x="964" y="324" style="--t: 1.12s">C6</text>
+              <text class="sld__t sld__t--dim" x="964" y="340" style="--t: 1.17s">30 A</text>
+              <path class="off" pathLength="1" d="M950 352V396" style="--t: 1.07s" />
+              <path class="on" pathLength="1" d="M950 352V396" style="--l: 2.84s" />
+              <circle class="halo" cx="950" cy="414" r="54" style="--l: 3.04s" />
+              <g class="sym" style="--t: 1.17s; --l: 3.04s"><rect x="928" y="396" width="44" height="30" rx="2" /><path d="M936 405h28 M936 411h28 M936 417h28" /></g>
+              <text class="sld__n" x="950" y="466" text-anchor="middle" style="--t: 1.22s">Climatización</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="1025" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M1100 268V304" style="--t: 1.04s" />
+              <path class="on" pathLength="1" d="M1100 268V304" style="--l: 2.59s" />
+              <g class="sym" style="--t: 1.14s; --l: 2.79s"><circle class="pin" cx="1100" cy="308" r="3.5" /><circle class="pin" cx="1100" cy="348" r="3.5" /></g>
+              <path class="blade" d="M1100 308V348" style="--t: 1.14s; --l: 2.79s" />
+              <path class="led" d="M1069 330.5h7l3 -5h-7z" style="--t: 1.19s; --l: 2.79s" />
+              <text class="sld__t" x="1114" y="324" style="--t: 1.19s">C7</text>
+              <text class="sld__t sld__t--dim" x="1114" y="340" style="--t: 1.24s">20 A</text>
+              <path class="off" pathLength="1" d="M1100 352V396" style="--t: 1.14s" />
+              <path class="on" pathLength="1" d="M1100 352V396" style="--l: 2.99s" />
+              <circle class="halo" cx="1100" cy="414" r="54" style="--l: 3.19s" />
+              <g class="sym" style="--t: 1.24s; --l: 3.19s"><circle cx="1100" cy="414" r="18" /><text class="sld__m" x="1100" y="419.5">M</text></g>
+              <text class="sld__n" x="1100" y="466" text-anchor="middle" style="--t: 1.29s">Bomba de agua</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="1175" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M1250 268V304" style="--t: 1.11s" />
+              <path class="on" pathLength="1" d="M1250 268V304" style="--l: 2.73s" />
+              <g class="sym" style="--t: 1.21s; --l: 2.93s"><circle class="pin" cx="1250" cy="308" r="3.5" /><circle class="pin" cx="1250" cy="348" r="3.5" /></g>
+              <path class="blade" d="M1250 308V348" style="--t: 1.21s; --l: 2.93s" />
+              <path class="led" d="M1219 330.5h7l3 -5h-7z" style="--t: 1.26s; --l: 2.93s" />
+              <text class="sld__t" x="1264" y="324" style="--t: 1.26s">C8</text>
+              <text class="sld__t sld__t--dim" x="1264" y="340" style="--t: 1.31s">30 A</text>
+              <path class="off" pathLength="1" d="M1250 352V396" style="--t: 1.21s" />
+              <path class="on" pathLength="1" d="M1250 352V396" style="--l: 3.13s" />
+              <circle class="halo" cx="1250" cy="414" r="54" style="--l: 3.33s" />
+              <g class="sym" style="--t: 1.31s; --l: 3.33s"><path d="M1250 396l10 4.5-20 9 20 9-20 9 20 9-10 4.5" /></g>
+              <text class="sld__n" x="1250" y="466" text-anchor="middle" style="--t: 1.36s">Calentador</text>
+            </g>
+            <g class="circuit">
+              <rect class="hit" x="1325" y="268" width="150" height="220" />
+              <path class="off" pathLength="1" d="M1400 268V304" style="--t: 1.18s" />
+              <path class="on" pathLength="1" d="M1400 268V304" style="--l: 2.87s" />
+              <g class="sym" style="--t: 1.28s; --l: 3.07s"><circle class="pin" cx="1400" cy="308" r="3.5" /><circle class="pin" cx="1400" cy="348" r="3.5" /></g>
+              <path class="blade" d="M1400 308V348" style="--t: 1.28s; --l: 3.07s" />
+              <path class="led" d="M1369 330.5h7l3 -5h-7z" style="--t: 1.33s; --l: 3.07s" />
+              <text class="sld__t" x="1414" y="324" style="--t: 1.33s">C9</text>
+              <text class="sld__t sld__t--dim" x="1414" y="340" style="--t: 1.38s">20 A</text>
+              <path class="off" pathLength="1" d="M1400 352V396" style="--t: 1.28s" />
+              <path class="on" pathLength="1" d="M1400 352V396" style="--l: 3.27s" />
+              <circle class="halo" cx="1400" cy="414" r="54" style="--l: 3.47s" />
+              <g class="sym" style="--t: 1.38s; --l: 3.47s"><path d="M1382 414a18 18 0 0 1 36 0z M1394 404v6 M1406 404v6" /></g>
+              <text class="sld__n" x="1400" y="466" text-anchor="middle" style="--t: 1.43s">Tomacorrientes</text>
+            </g>
+            <g class="sld__flow">
+              <path class="pulse" d="M800 228V268H800V396" style="--t: 3.85s; --p: 3.8s" />
+              <path class="pulse" d="M800 228V268H1100V396" style="--t: 4.32s; --p: 4.4s" />
+              <path class="pulse" d="M800 228V268H350V396" style="--t: 4.79s; --p: 5s" />
+              <path class="pulse" d="M800 228V268H650V396" style="--t: 5.26s; --p: 3.8s" />
+              <path class="pulse" d="M800 228V268H1400V396" style="--t: 5.73s; --p: 4.4s" />
+              <path class="pulse" d="M800 228V268H200V396" style="--t: 6.2s; --p: 5s" />
+              <path class="pulse" d="M800 228V268H950V396" style="--t: 6.67s; --p: 3.8s" />
+              <path class="pulse" d="M800 228V268H500V396" style="--t: 7.14s; --p: 4.4s" />
+              <path class="pulse" d="M800 228V268H1250V396" style="--t: 7.61s; --p: 5s" />
+            </g>
+          </svg>
         </div>
 
         <div class="shell hero__content">
