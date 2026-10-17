@@ -9,8 +9,7 @@
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { extname, join, normalize, sep } from 'node:path';
-import { dirname } from 'node:path';
+import { dirname, extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { handleContact } from './server/contact.js';
@@ -33,8 +32,9 @@ const TYPES = {
   '.mp4': 'video/mp4',
 };
 
-/** Never serve the source frames, the local inbox, or anything dot-prefixed. */
-const BLOCKED = [`frames${sep}`, `server${sep}`, `data${sep}`, `source-images${sep}`];
+/** The site is index.html plus these folders. Everything else (server code,
+ *  package files, tests, the local inbox, source masters) stays private. */
+const PUBLIC = [`src${sep}`, `assets${sep}`];
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host ?? 'localhost'}`);
@@ -65,7 +65,7 @@ async function serveStatic(pathname, res, req) {
   if (relative.split(sep).some((part) => part.startsWith('.'))) {
     return notFound(res);
   }
-  if (BLOCKED.some((prefix) => relative.startsWith(prefix))) {
+  if (relative !== '' && relative !== 'index.html' && !PUBLIC.some((dir) => relative.startsWith(dir))) {
     return notFound(res);
   }
 

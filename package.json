@@ -8,10 +8,14 @@
     "start": "node --env-file=.env server.js",
     "check": "node --check server.js && node --check src/main.js",
     "test": "node --test \"server/*.test.js\"",
-    "smtp-sink": "node server/smtp-sink.js"
+    "smtp-sink": "node server/smtp-sink.js",
+    "test:e2e": "playwright test"
   },
   "type": "module",
   "dependencies": {
     "nodemailer": "^10.0.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
   }
 }

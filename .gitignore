@@ -8,3 +8,7 @@ data/
 # Source masters. Never shipped — the site uses the WebP in assets/.
 /frames/
 /source-images/
+
+# Playwright output
+test-results/
+playwright-report/

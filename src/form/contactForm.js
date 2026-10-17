@@ -34,7 +34,7 @@ const RULES = {
 
 export function initContactForm() {
   const form = document.querySelector('[data-contact-form]');
-  if (!form) return () => {};
+  if (!form) return;
 
   const button = form.querySelector('[data-submit]');
   const status = form.querySelector('[data-status]');
@@ -147,11 +147,4 @@ export function initContactForm() {
   form.addEventListener('blur', onBlur, true);
   form.addEventListener('input', onInput);
   document.addEventListener('click', onQuote);
-
-  return () => {
-    form.removeEventListener('submit', onSubmit);
-    form.removeEventListener('blur', onBlur, true);
-    form.removeEventListener('input', onInput);
-    document.removeEventListener('click', onQuote);
-  };
 }

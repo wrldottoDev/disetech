@@ -8,8 +8,8 @@
  *
  * The hidden state lives in CSS behind `.js-reveals`, a class this module puts
  * on <html> itself. Content is therefore only ever hidden while JavaScript is
- * demonstrably alive to un-hide it: no JS, a dead CDN, an exception above this
- * line — the page just renders, fully readable.
+ * demonstrably alive to un-hide it: no JS or an exception above this line, and
+ * the page just renders, fully readable.
  *
  * IntersectionObserver on purpose: these are one-shot state flips, so they need
  * no per-frame work and no rAF, and a paused tab cannot strand them half-played.
@@ -29,14 +29,14 @@ const FAILSAFE_MS = 3000;
 
 export function initReveals() {
   const groups = [...document.querySelectorAll('[data-reveal]')];
-  if (!groups.length) return () => {};
+  if (!groups.length) return;
 
   const reveal = (group) => group.classList.add('is-revealed');
   const revealAll = () => groups.forEach(reveal);
 
   if (window.matchMedia(REDUCED).matches) {
     revealAll();
-    return () => {};
+    return;
   }
 
   // from here on the page is allowed to hide things
@@ -49,7 +49,7 @@ export function initReveals() {
 
   if (!('IntersectionObserver' in window)) {
     revealAll();
-    return () => {};
+    return;
   }
 
   let alive = false;
@@ -67,14 +67,9 @@ export function initReveals() {
 
   groups.forEach((group) => observer.observe(group));
 
-  const failsafe = setTimeout(() => {
+  setTimeout(() => {
     if (alive) return;
     revealAll();
     observer.disconnect();
   }, FAILSAFE_MS);
-
-  return () => {
-    clearTimeout(failsafe);
-    observer.disconnect();
-  };
 }
