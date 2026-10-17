@@ -1,1302 +1,1526 @@
 /* ============================================================ DISETECH ==== */
+/*
+  One family (Archivo) across its width axis: expanded for display, normal for
+  text. One accent (the logo's green). One motif: the slanted bar from the E's
+  in the wordmark — it is the full stop on every headline, the bullet in every
+  list and the indicator on every breaker.
+*/
 
 :root {
   --bg: #0b0d0e;
+  --surface: #121517;
+  --surface-2: #181c1e;
+  --gray-dark: #242729;
   --green: #55f20d;
+  --green-hi: #6bff2a;
+  --green-ink: #06210a; /* 11.6:1 on the green */
   --white: #ffffff;
   --gray: #b5b7b9;
-  --gray-dark: #242729;
+  --gray-3: #8a8e91; /* labels and fine print: 5.6:1 on --bg */
+  --line: rgba(181, 183, 185, 0.14);
+  --line-strong: rgba(181, 183, 185, 0.28);
+  --error: #ff8f85;
 
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font: 'Archivo', system-ui, sans-serif;
+  --wide: 118%;
 
-  /* -------------------------------------------------------------------------
-     Hero scroll distance. THE place to make the sequence longer or shorter.
-     The canvas is sticky for 100svh of it, so the scrubbed part is
-     (--hero-scroll - 100svh). 250svh–300svh is the sweet spot.
-     ------------------------------------------------------------------------- */
-  --hero-scroll: 280svh;
+  --shell: 1320px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --nav-h: 72px;
+  --section: clamp(5.5rem, 12vw, 10rem);
 
-  --nav-height: 76px;
+  --fs-hero: clamp(2.3rem, 6.4vw, 6rem);
+  --fs-h2: clamp(2rem, 4.6vw, 4.25rem);
+  --fs-h3: clamp(1.3rem, 1.9vw, 1.6rem);
+  --fs-lede: clamp(1.05rem, 1.3vw, 1.2rem);
 
-  /* ----------------------------------------------------------------- system */
-  --container: 1280px;
-  --gutter: clamp(1.25rem, 5vw, 4rem);
-  --section-y: clamp(4.5rem, 10vh, 7.5rem);
-  --rule: rgba(181, 183, 185, 0.14);
-  --rule-strong: rgba(181, 183, 185, 0.28);
-
-  --fs-display: clamp(2.5rem, 6.4vw, 5.5rem);
-  --fs-h2: clamp(2.1rem, 5vw, 4rem);
-  --fs-h3: clamp(1.35rem, 2.3vw, 2rem);
-  --fs-lede: clamp(1rem, 1.35vw, 1.15rem);
-  --fs-eyebrow: 0.7rem;
-
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --reveal-dur: 620ms;
-  --dur: 240ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal: 1s;
+  --skew: -24deg; /* the angle of the bars in the wordmark */
 }
 
-/* Every section the navbar can jump to clears the fixed bar. */
-[id] {
-  scroll-margin-top: var(--nav-height);
-}
+/* ================================================================ BASE ==== */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+/* the open mobile menu is modal: the page behind it holds still */
+html:has(.menu[open]) {
+  overflow: hidden;
+}
+
+[id] {
+  scroll-margin-top: var(--nav-h);
 }
 
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--white);
-  font-family: var(--font-body);
+  color: var(--gray);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
-/* the skip link is the one sr-only element that must become visible on focus */
-.sr-only:focus-visible {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 200;
-  width: auto;
-  height: auto;
-  margin: 0;
-  padding: 0.75rem 1.25rem;
-  overflow: visible;
-  clip: auto;
+::selection {
   background: var(--green);
-  color: #06210a;
-  font-size: 0.85rem;
-  text-decoration: none;
+  color: var(--green-ink);
 }
 
 :focus-visible {
   outline: 2px solid var(--green);
-  outline-offset: 4px;
+  outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ================================================================= HERO ==== */
-
-.hero {
-  position: relative;
-  height: var(--hero-scroll);
-  background: var(--bg);
-}
-
-.hero--static {
-  height: 100vh;
-  height: 100svh;
-}
-
-.hero__viewport {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  height: 100svh; /* stable on mobile: no resize storm when the URL bar hides */
-  overflow: hidden;
-}
-
-.hero__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  /* painted before the first frame decodes, so there is no flash and no shift */
-  background: var(--bg);
-}
-
-/* Legibility scrim. Kept subtle: the frames are already very dark. */
-.hero__viewport::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 55%, transparent 30%, rgba(11, 13, 14, 0.72) 100%),
-    linear-gradient(180deg, rgba(11, 13, 14, 0.55) 0%, transparent 28%, rgba(11, 13, 14, 0.7) 100%);
-}
-
-/* ---------------------------------------------------------------- overlay -- */
-
-.hero__overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  /* one column that cannot outgrow the viewport, so wide copy and the CTA row
-     wrap instead of overflowing */
-  grid-template-columns: minmax(0, 1fr);
-  place-items: center;
-  padding: clamp(1.5rem, 5vw, 4rem);
-  text-align: center;
-}
-
-.beat {
-  position: relative;
-  grid-area: 1 / 1;
-  width: 100%; /* grid items are max-content by default — this lets CTAs wrap */
-  /* GSAP autoAlpha drives visibility so hidden CTAs stay out of the tab order */
-  visibility: hidden;
-  opacity: 0;
-  will-change: transform, opacity, filter;
-}
-
-.beat.is-visible {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* ------------------------------------------------------------- hero phrase -- */
-
-.beat--phrase {
-  /* the sentence reads better ranged left with room around it than centred */
-  justify-self: start;
-  text-align: left;
-}
-
-.phrase {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.1rem, 8.5vw, 7rem);
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  color: var(--white);
-  text-wrap: initial;
-}
-
-.phrase__line {
-  display: block;
-  /* the assembling animation drives these; if GSAP never loads the sentence is
-     simply there, in full */
-  will-change: transform, opacity;
-}
-
-/* the single point of green: a full stop that behaves like an indicator light */
-.phrase__line[data-phrase-line='proyecto']::after {
-  content: '';
-  display: inline-block;
-  width: 0.16em;
-  height: 0.16em;
-  margin-left: 0.28em;
-  vertical-align: 0.12em;
-  background: var(--green);
-}
-
-@media (max-width: 899px) {
-  /* the overlay pins beats to the bottom on phones; the sentence is the headline,
-     so it takes the middle of the screen and most of its width */
-  .beat--phrase {
-    justify-self: stretch;
-    align-self: center;
-  }
-
-  .phrase {
-    font-size: clamp(2.6rem, 14vw, 6rem);
-    line-height: 0.98;
-  }
-}
-
-/*
-  The frames are 16:9 and the phone viewport is not. `cover` crops the sides,
-  which on this footage means the cable end and the breaker panel drift out of
-  frame. Bias the crop toward the subject instead of the geometric centre.
-  Replace this block with a dedicated 9:16 sequence when one exists.
-*/
-@media (max-width: 899px) {
-  .hero__overlay {
-    place-items: end start;
-    padding-bottom: clamp(5rem, 16vh, 9rem);
-  }
-
-  .beat--brand {
-    justify-self: center;
-    align-self: center;
-    text-align: center;
-  }
-
-  .hero__hint {
-    bottom: clamp(1rem, 3vh, 1.75rem);
-  }
-}
-
-/* ------------------------------------------------------------- brand beat -- */
-
-/* The last frames are the brightest in the sequence — the branding needs its
-   own pool of darkness to stay readable. */
-.beat--brand::before {
-  content: '';
-  position: absolute;
-  inset: -60% -30%;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(
-    closest-side,
-    rgba(11, 13, 14, 0.9),
-    rgba(11, 13, 14, 0.72) 45%,
-    rgba(11, 13, 14, 0) 100%
-  );
-}
-
-.hero__brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(1.25rem, 3vw, 2rem);
-  margin: 0;
-}
-
-.hero__logo {
-  display: block;
-  width: clamp(230px, 34vw, 460px);
-  height: auto;
-}
-
-.hero__tagline {
-  margin: 0;
-  font-size: clamp(0.95rem, 1.6vw, 1.2rem);
-  letter-spacing: 0.02em;
-  color: var(--gray);
-}
-
-.hero__ctas {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: clamp(0.5rem, 2vw, 1.25rem);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 1.75rem;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out),
-    color 200ms var(--ease-out),
-    transform 200ms var(--ease-out);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-.btn--primary {
-  background: var(--green);
-  color: #06210a; /* 11.6:1 on #55F20D */
-}
-
-.btn--primary:hover {
-  background: #6bff2a;
-}
-
-.btn--ghost {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border-color: rgba(181, 183, 185, 0.35);
-  color: var(--white);
-}
-
-.btn--ghost::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgba(255, 255, 255, 0.08);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 340ms var(--ease-out);
-}
-
-.btn--ghost:hover::before,
-.btn--ghost:focus-visible::before {
-  transform: scaleX(1);
-}
-
-.btn--ghost:hover {
-  border-color: var(--white);
-}
-
-/* ------------------------------------------------------------ scroll hint -- */
-
-.hero__hint {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(1.25rem, 4vh, 2.5rem);
-  translate: -50% 0;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--white);
-  opacity: 1;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-  animation: hero-hint-bounce 1.8s ease-in-out infinite;
-}
-
-.hero--static .hero__hint {
-  display: none;
-}
-
-.hero__hint span {
-  display: block;
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
-  border-right: 2px solid var(--green);
-  border-bottom: 2px solid var(--green);
-  transform: translateY(-3px) rotate(45deg);
-}
-
-@keyframes hero-hint-bounce {
-  0%, 20%, 55%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(7px);
-  }
-  65% {
-    transform: translateY(3px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__hint {
-    animation: none;
-  }
-}
-
-/* =============================================================== NAVBAR ==== */
-
-.site-nav {
+.skip {
   position: fixed;
-  inset: 0 0 auto;
+  top: 0.75rem;
+  left: 0.75rem;
   z-index: 100;
-  height: var(--nav-height);
-}
-
-.site-nav__surface {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: rgba(11, 13, 14, 0.75);
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  border-bottom: 1px solid rgba(181, 183, 185, 0.12);
-  opacity: 0; /* scrubbed up by navbar.js as the page scrolls */
-}
-
-.site-nav__inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  height: 100%;
-  padding: 0 clamp(1.25rem, 5vw, 4rem);
-}
-
-.site-nav__logo {
-  display: flex;
-  align-items: center;
-  flex: none;
-}
-
-.site-nav__logo img {
-  display: block;
-  width: auto;
-  height: 19px;
-}
-
-.site-nav__links {
-  display: flex;
-  align-items: center;
-  gap: clamp(1.25rem, 2.6vw, 2.5rem);
-  margin: 0 auto 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.site-nav__link {
-  position: relative;
-  display: inline-block;
-  padding: 0.5rem 0;
-  color: var(--gray);
-  font-size: 0.83rem;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: color 200ms ease;
-}
-
-.site-nav__link:hover {
-  color: var(--white);
-}
-
-/* hairline that grows from the centre — the only motion in the bar */
-.site-nav__link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.15rem;
-  height: 1px;
+  padding: 0.75rem 1.25rem;
   background: var(--green);
-  transform: scaleX(0);
-  transition: transform 240ms ease;
-}
-
-.site-nav__link:hover::after,
-.site-nav__link:focus-visible::after {
-  transform: scaleX(1);
-}
-
-.site-nav__cta {
-  flex: none;
-  min-height: 40px;
-  padding: 0 1.15rem;
-  border-color: rgba(85, 242, 13, 0.4);
-  color: var(--green);
-  font-size: 0.78rem;
-}
-
-.site-nav__cta::before {
-  background: var(--green);
-}
-
-.site-nav__cta:hover,
-.site-nav__cta:focus-visible {
-  border-color: var(--green);
-  color: #06210a;
-}
-
-/* --------------------------------------------------------------- hamburger */
-
-.nav-toggle {
-  display: none;
-  flex: none;
-  margin-left: auto;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--white);
-  cursor: pointer;
-}
-
-.nav-toggle span {
-  display: block;
-  width: 22px;
-  height: 1.5px;
-  margin: 5px auto;
-  background: currentColor;
-}
-
-@media (max-width: 899px) {
-  .site-nav__links,
-  .site-nav__inner > .site-nav__cta {
-    display: none;
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-}
-
-/* ------------------------------------------------------------- mobile menu */
-
-.nav-menu {
-  width: 100%;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--white);
-  overflow: visible;
-}
-
-.nav-menu::backdrop {
-  background: rgba(11, 13, 14, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-.nav-menu__panel {
-  padding: 0 clamp(1.25rem, 5vw, 2.5rem) clamp(2rem, 6vh, 3rem);
-  background: var(--bg);
-  border-bottom: 1px solid var(--gray-dark);
-}
-
-.nav-menu__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--nav-height);
-}
-
-.nav-menu__logo {
-  display: block;
-  width: auto;
-  height: 19px;
-}
-
-.nav-menu__close {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--white);
-  font-size: 1.4rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.nav-menu__links {
-  margin: clamp(1rem, 4vh, 2rem) 0 clamp(1.75rem, 5vh, 2.5rem);
-  padding: 0;
-  list-style: none;
-}
-
-.nav-menu__links a {
-  display: block;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid rgba(181, 183, 185, 0.1);
-  color: var(--white);
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  letter-spacing: -0.01em;
+  color: var(--green-ink);
+  font-weight: 600;
   text-decoration: none;
+  transform: translateY(-200%);
 }
 
-.nav-menu__links a:hover {
-  color: var(--green);
+.skip:focus-visible {
+  transform: none;
 }
-
-.nav-menu .btn {
-  width: 100%;
-}
-
-/* ============================================================== LAYOUT ==== */
 
 .shell {
   width: 100%;
-  max-width: var(--container);
+  max-width: var(--shell);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
 
-.section {
-  position: relative;
-  z-index: 1;
-  padding-block: var(--section-y);
-  background: var(--bg);
-}
-
-/*
-  Structure, not decoration: a full-bleed hairline at every section seam so the
-  page reads as one continuous document rather than a stack of slides.
-*/
-.section + .section::after,
-.marquee-section + .section::after,
-.section + .marquee-section::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: var(--rule);
-}
-
-/* the hero's last frame dissolves into the page instead of hitting a hard edge */
-.section--after-hero::before {
-  content: '';
-  position: absolute;
-  inset: auto 0 100% 0;
-  height: clamp(6rem, 18vh, 14rem);
-  pointer-events: none;
-  background: linear-gradient(to top, var(--bg), rgba(11, 13, 14, 0));
-}
-
-.rule {
-  height: 1px;
-  border: 0;
-  margin: 0;
-  background: var(--rule);
-}
-
-/* ------------------------------------------------------------ type system */
-
-.eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0 0 clamp(1.5rem, 4vh, 2.5rem);
-  color: var(--green);
-  font-size: var(--fs-eyebrow);
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-
-.eyebrow::before {
-  content: '';
-  width: 28px;
-  height: 1px;
-  background: currentColor;
-}
+/* ---------------------------------------------------------------- type -- */
 
 .h2 {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
+  color: var(--white);
   font-size: var(--fs-h2);
+  font-weight: 600;
+  font-stretch: var(--wide);
   line-height: 1.02;
   letter-spacing: -0.03em;
-  text-wrap: balance;
 }
 
 .h3 {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
+  color: var(--white);
   font-size: var(--fs-h3);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  font-stretch: 106%;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 .lede {
   margin: 0;
-  max-width: 46ch;
-  color: var(--gray);
-  font-size: var(--fs-lede);
-  line-height: 1.7;
-}
-
-.muted {
-  color: var(--gray);
-}
-
-/* line-by-line reveal: the mask is what makes the wipe read as deliberate */
-.line-mask {
-  display: block;
-  overflow: hidden;
-}
-
-/* transforms are ignored on inline boxes — the mask reveal needs this */
-.line-mask > * {
-  display: block;
-}
-
-/* --------------------------------------------------------------- arrow link */
-
-.arrow-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--white);
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.arrow-link svg {
-  width: 16px;
-  height: 16px;
-  transition: transform var(--dur) var(--ease-out);
-}
-
-.arrow-link:hover {
-  color: var(--green);
-}
-
-.arrow-link:hover svg,
-.arrow-link:focus-visible svg {
-  transform: translateX(4px);
-}
-
-/* ================================================================ INTRO ==== */
-
-.intro__grid {
-  display: grid;
-  gap: clamp(2.5rem, 7vh, 4.5rem) clamp(2rem, 6vw, 5rem);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* the statement gets the full measure; the paragraph steps in underneath it */
-.intro__title {
-  grid-column: 1 / -1;
-  font-size: var(--fs-display);
-  /* the line breaks are authored here, one per .line-mask — balancing would
-     re-break them and defeat the masks */
-  text-wrap: initial;
-}
-
-/* first two lines set up, the last one lands — so the last one is the bright one */
-.intro__title .line-mask:not(:last-child) {
-  color: var(--gray);
-}
-
-.intro__title em {
-  font-style: normal;
-}
-
-.intro__grid .lede {
-  grid-column: 2;
-}
-
-@media (max-width: 899px) {
-  .intro__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .intro__grid .lede {
-    grid-column: 1;
-  }
-}
-
-/* ============================================================ MATERIALS ==== */
-
-.materials__grid {
-  display: grid;
-  gap: clamp(2rem, 5vw, 4rem);
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  align-items: start;
-}
-
-.materials__aside {
-  position: sticky;
-  top: calc(var(--nav-height) + clamp(1.5rem, 5vh, 3rem));
-}
-
-/* typographic echo of whichever category is being hovered — no stock imagery */
-.materials__display {
-  margin-top: clamp(2rem, 6vh, 3.5rem);
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-}
-
-.materials__display-index {
-  display: block;
-  color: var(--green);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-}
-
-.materials__display-name {
-  display: block;
-  margin-top: 0.6rem;
-  min-height: 2.4em;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  transition: opacity var(--dur) var(--ease-out);
-}
-
-.materials__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--rule);
-}
-
-.material {
-  position: relative;
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr);
-  gap: 0 1rem;
-  align-items: baseline;
-  padding: clamp(1.25rem, 3vh, 1.9rem) 0;
-  border-bottom: 1px solid var(--rule);
-  transition: transform var(--dur) var(--ease-out);
-}
-
-/* the growing green hairline, the one bit of colour in this section */
-.material::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: 100%;
-  height: 1px;
-  background: var(--green);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 420ms var(--ease-out);
-}
-
-.material.is-active::after {
-  transform: scaleX(1);
-}
-
-.material.is-active {
-  transform: translateX(7px);
-}
-
-/* one row forward means the others step back — only where there is a pointer */
-@media (hover: hover) {
-  .materials__list.is-engaged .material {
-    opacity: 0.42;
-  }
-
-  .materials__list.is-engaged .material.is-active {
-    opacity: 1;
-  }
-}
-
-.material__name {
-  transition: color var(--dur) var(--ease-out);
-}
-
-.material.is-active .material__name {
-  color: var(--white);
-}
-
-.material__index {
-  color: var(--gray);
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  transition: color var(--dur) var(--ease-out);
-}
-
-.material.is-active .material__index {
-  color: var(--green);
-}
-
-.material__name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.2rem, 2vw, 1.65rem);
-  letter-spacing: -0.02em;
-}
-
-.material__note {
-  grid-column: 2;
-  margin: 0.4rem 0 0;
   max-width: 44ch;
   color: var(--gray);
-  font-size: 0.92rem;
+  font-size: var(--fs-lede);
   line-height: 1.6;
+  text-wrap: pretty;
 }
 
-@media (max-width: 899px) {
-  .materials__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .materials__aside {
-    position: static;
-  }
-
-  /* the display panel only means anything next to a hoverable list */
-  .materials__display {
-    display: none;
-  }
+/* one line per mask, authored in the markup; the padding keeps descenders
+   (g, y, p) from being shaved off by the crop */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
 }
 
+.mask > * {
+  display: block;
+}
 
-/* ================================================================ DEPTH ==== */
+/* The full stop, set as the slanted bar from the wordmark. The "." stays in
+   the text for screen readers and copy-paste; it is just not painted. */
+.dot {
+  display: inline-block;
+  width: 0.2em;
+  height: 0.2em;
+  margin-left: 0.06em;
+  overflow: hidden;
+  color: transparent;
+  background: var(--green);
+  transform: skewX(var(--skew));
+  vertical-align: baseline;
+}
+
+/* ------------------------------------------------------------ actions -- */
+
 /*
-   Two moments where the page opens onto a room. The image never reads as a
-   photograph in a frame: it is held far back with low opacity, its edges are
-   dissolved into the page background with a mask, and a scrubbed ScrollTrigger
-   brings it up out of the dark and puts it back.
+  The chamfered corner is painted on a pseudo-element, not clipped off the
+  button itself, so the focus ring is never cut along with it.
 */
-
-.depth {
+.btn {
+  --chamfer: 10px;
+  --btn-bg: var(--green);
   position: relative;
-  z-index: 1;
-  min-height: clamp(60vh, 95vh, 900px);
-  display: grid;
-  align-items: center;
-  overflow: hidden;
-  background: var(--bg);
   isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 1.6rem;
+  border: 0;
+  background: none;
+  color: var(--green-ink);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 200ms var(--ease);
 }
 
-.depth__media {
-  position: absolute;
-  /* Flush with the section, and it never moves: the mask below is measured
-     against THIS box, so the fade always lands exactly on the section's own
-     edges. The parallax and the push are applied to the <img> inside instead —
-     move this box and the fade drifts off the edge, leaving a straight cut. */
-  inset: 0;
-  z-index: -2;
-  overflow: hidden;
-
-  /* No visible start and no visible end, on BOTH axes: a vertical mask alone
-     still leaves hard left and right edges. The two gradients are intersected
-     so the room dissolves into the page on every side. */
-  /* The media is inset -12%, so the section's own edges sit at 10% and 90% of
-     it. The fade has to be fully transparent BY then, or `overflow: hidden`
-     clips a half-lit image and puts a hard line back on screen. */
-  mask-image: linear-gradient(180deg, transparent, #000 26%, #000 74%, transparent),
-    linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-  mask-composite: intersect;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 26%, #000 74%, transparent),
-    linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-  -webkit-mask-composite: source-in;
-}
-
-.depth__media img {
-  /* taller than the box so the drift has somewhere to go */
-  position: absolute;
-  inset: -10% 0;
-  width: 100%;
-  height: 120%;
-  object-fit: cover;
-  opacity: 0.05; /* the scrub takes it from here */
-  will-change: transform, opacity;
-  /* Both source images have wording painted on the walls; the WebP derivatives
-     in assets/backdrops/ are already cropped past it, so the copy on this
-     section is the only text on screen. */
-  object-position: center;
-  /* a touch more contrast now that the image is allowed to come further up:
-     it is the near-black to lit-corridor range that reads as depth */
-  filter: grayscale(0.3) contrast(1.14) brightness(0.94);
-}
-
-/* A soft vertical wash, not a radial one — a radial vignette draws a visible
-   rounded rectangle over a full-bleed image. */
-.depth::before {
+.btn::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    var(--bg) 0%,
-    rgba(11, 13, 14, 0.35) 22%,
-    rgba(11, 13, 14, 0.35) 78%,
-    var(--bg) 100%
+  background: var(--btn-bg);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%,
+    0 100%
   );
+  transition: background-color 200ms var(--ease);
 }
 
-.depth__content {
+.btn:hover {
+  --btn-bg: var(--green-hi);
+}
+
+.btn:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.btn--sm {
+  --chamfer: 8px;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  font-size: 0.875rem;
+}
+
+.btn--dark {
+  --btn-bg: var(--bg);
+  color: var(--white);
+}
+
+.btn--dark:hover {
+  --btn-bg: #1c2124;
+}
+
+.link {
   position: relative;
-  padding-block: clamp(3rem, 10vh, 6rem);
-}
-
-.depth__line {
-  margin: 0;
-  max-width: 16ch;
-  font-family: var(--font-display);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  color: var(--white);
   font-weight: 500;
-  font-size: clamp(1.9rem, 4.6vw, 3.6rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  text-decoration: none;
 }
 
-.depth__line em {
-  font-style: normal;
-  color: var(--gray);
+.link svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  transition: transform 300ms var(--ease);
 }
 
-/* second pass: fondo2 sits behind the brands strip, so its crop is tuned for
-   type sitting on top of it rather than for an empty room */
-.marquee-section--depth .depth__media img {
-  object-position: 60% center;
-}
-
-@media (max-width: 899px) {
-  .depth {
-    min-height: 62vh;
-  }
-
-  /* a 16:9 room cropped into a tall phone loses the corridor; bias the crop to
-     where the depth actually reads */
-  .depth__media img {
-    object-position: 64% center;
-  }
-
-  .marquee-section--depth .depth__media img {
-    object-position: 55% center;
-  }
-}
-
-/* ============================================================= SERVICES ==== */
-
-.services__list {
-  margin: clamp(2.5rem, 7vh, 4.5rem) 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--rule);
-}
-
-.service {
-  position: relative;
-  display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: clamp(1rem, 3vw, 3rem);
-  align-items: start;
-  padding: clamp(2rem, 5vh, 3.25rem) 0;
-  border-bottom: 1px solid var(--rule);
-  transition: background-color 400ms var(--ease-out);
-}
-
-/* the drawn rule sits on top of the static border, in green */
-.service::after,
-.why__row::after {
+/* a resting hairline, and a green one that draws over it on hover */
+.link::before,
+.link::after {
   content: '';
   position: absolute;
   left: 0;
-  bottom: -1px;
-  width: 100%;
+  right: 0;
+  bottom: 0.45rem;
   height: 1px;
-  background: linear-gradient(90deg, var(--green), rgba(85, 242, 13, 0));
+  background: var(--line-strong);
 }
 
-@media (hover: hover) and (min-width: 900px) {
-  .service:hover {
-    background: rgba(36, 39, 41, 0.35);
-  }
-}
-
-.service__index {
-  color: var(--green);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  padding-top: 0.4em;
-}
-
-.service__body {
-  margin: 0;
-  max-width: 48ch;
-  color: var(--gray);
-  line-height: 1.7;
-}
-
-.service__action {
-  padding-top: 0.35em;
-}
-
-@media (max-width: 899px) {
-  .service {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.85rem;
-  }
-
-  .service__index {
-    padding-top: 0;
-  }
-}
-
-/* ============================================================ SOLUTIONS ==== */
-
-.solutions__split {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--rule);
-}
-
-.solution {
-  position: relative;
-  padding: clamp(2.5rem, 7vh, 4.5rem) clamp(1.5rem, 3vw, 3rem);
-  border-bottom: 1px solid var(--rule);
-  transition:
-    background-color 320ms var(--ease-out),
-    opacity 320ms var(--ease-out);
-}
-
-.solution::before {
-  content: '';
-  position: absolute;
-  inset: -1px 0 auto;
-  height: 2px;
+.link::after {
   background: var(--green);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 520ms var(--ease-out);
+  transition: transform 420ms var(--ease-expo);
 }
 
-.solution + .solution {
-  border-left: 1px solid var(--rule);
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
 }
 
-/* hovering one half gives it presence and lets the other recede — desktop only,
-   where there is a pointer to hover with */
-@media (hover: hover) and (min-width: 900px) {
-  .solutions__split:hover .solution {
-    opacity: 0.45;
-  }
-
-  .solutions__split .solution:hover {
-    opacity: 1;
-    background: rgba(36, 39, 41, 0.55);
-  }
-
-  .solutions__split .solution:hover::before {
-    transform: scaleX(1);
-  }
+.link:hover svg,
+.link:focus-visible svg {
+  transform: translateX(4px);
 }
 
-/* touch: no hover to lean on, so each half announces itself as it arrives */
-@media (hover: none) {
-  .js-reveals .solution.is-revealed::before,
-  .js-reveals [data-reveal].is-revealed .solution::before {
-    transform: scaleX(1);
-    transition-delay: 220ms;
-  }
+/* ================================================================= NAV ==== */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
 }
 
-.solution__list {
-  margin: clamp(1.5rem, 4vh, 2.25rem) 0 0;
+.nav__bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  height: var(--nav-h);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 400ms var(--ease),
+    border-color 400ms var(--ease);
+}
+
+/* nav.js adds this a few pixels into the page */
+.nav.is-scrolled .nav__bar {
+  background: rgba(11, 13, 14, 0.82);
+  border-color: var(--line);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.nav__logo {
+  flex: none;
+  margin-right: auto;
+}
+
+.nav__logo img {
+  width: auto;
+  height: 20px;
+}
+
+.nav__links {
+  display: flex;
+  gap: clamp(1.25rem, 2.4vw, 2.25rem);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.solution__list li {
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--rule);
+.nav__links a {
+  position: relative;
+  display: block;
+  padding: 0.6rem 0;
   color: var(--gray);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 200ms var(--ease);
 }
 
-.solution__list li:last-child {
-  border-bottom: 0;
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.25rem;
+  width: 14px;
+  height: 3px;
+  background: var(--green);
+  transform: skewX(var(--skew)) scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms var(--ease-expo);
+}
+
+.nav__links a:hover {
+  color: var(--white);
+}
+
+.nav__links a:hover::after,
+.nav__links a:focus-visible::after {
+  transform: skewX(var(--skew)) scaleX(1);
+}
+
+.nav__toggle {
+  display: none;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.nav__toggle span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  margin: 6px auto;
+  background: currentColor;
+}
+
+.nav__toggle span:last-child {
+  width: 14px;
+  margin-right: 11px;
 }
 
 @media (max-width: 899px) {
-  .solutions__split {
-    grid-template-columns: minmax(0, 1fr);
+  .nav__bar > nav,
+  .nav__cta {
+    display: none;
   }
 
-  .solution + .solution {
-    border-left: 0;
+  .nav__toggle {
+    display: block;
   }
 }
 
-/* ================================================================== WHY ==== */
+/* -------------------------------------------------------- mobile menu -- */
 
-.why__list {
-  margin: clamp(2.5rem, 7vh, 4.5rem) 0 0;
+.menu {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0 var(--gutter) max(2rem, env(safe-area-inset-bottom));
+  border: 0;
+  background: var(--bg);
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(-12px);
+  transition:
+    opacity 300ms var(--ease),
+    transform 500ms var(--ease-expo),
+    overlay 300ms allow-discrete,
+    display 300ms allow-discrete;
+}
+
+.menu[open] {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .menu[open] {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.menu::backdrop {
+  background: transparent;
+}
+
+.menu__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-h);
+}
+
+.menu__bar img {
+  width: auto;
+  height: 20px;
+}
+
+.menu__close {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 10px;
+  border: 0;
+  background: none;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.menu__close svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.menu__links {
+  margin: clamp(1.5rem, 6vh, 3rem) 0 auto;
   padding: 0;
   list-style: none;
 }
 
-.why__row {
+.menu__links a {
+  display: block;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--white);
+  font-size: clamp(1.9rem, 8vw, 2.75rem);
+  font-weight: 600;
+  font-stretch: var(--wide);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.menu__links a:active {
+  color: var(--green);
+}
+
+.menu[open] .menu__links li {
+  animation: rise 600ms var(--ease-expo) both;
+  animation-delay: calc(80ms + var(--i) * 50ms);
+}
+
+.menu__cta {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+/* ================================================================ HERO ==== */
+
+.hero {
   position: relative;
   display: grid;
-  grid-template-columns: 4rem minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(1rem, 3vw, 3rem);
-  align-items: baseline;
-  padding: clamp(1.75rem, 4.5vh, 2.75rem) 0;
-  border-top: 1px solid var(--rule);
+  align-items: end;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.why__row:last-child {
-  border-bottom: 1px solid var(--rule);
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
 }
 
-.why__index {
-  color: var(--green);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* hero.js lifts it in the frame playback starts, so frame 1 rises out of
+     the dark instead of popping in */
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-expo);
 }
 
-.why__body {
-  margin: 0;
-  max-width: 50ch;
-  color: var(--gray);
-  line-height: 1.7;
+.hero.is-ready .hero__video {
+  opacity: 1;
 }
 
-@media (max-width: 899px) {
-  .why__row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.75rem;
+/* once it has landed on the panel, the shot keeps breathing */
+.hero.is-ended .hero__video {
+  animation: settle 24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes settle {
+  to {
+    transform: scale(1.06);
   }
 }
 
-/* ================================================================== CTA ==== */
-
-.cta {
-  padding-block: clamp(7rem, 20vh, 14rem);
-  text-align: center;
+/* type sits bottom-left, so that is where the scene gives way */
+.hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, var(--bg) 0%, rgba(11, 13, 14, 0.72) 34%, rgba(11, 13, 14, 0) 70%),
+    linear-gradient(90deg, rgba(11, 13, 14, 0.8) 0%, rgba(11, 13, 14, 0.35) 45%, rgba(11, 13, 14, 0) 70%),
+    linear-gradient(180deg, rgba(11, 13, 14, 0.6) 0%, rgba(11, 13, 14, 0) 18%);
 }
 
-.cta__title {
-  margin: 0 auto;
-  max-width: 14ch;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.75rem, 9vw, 8rem);
+.hero__content {
+  padding-top: calc(var(--nav-h) + 6rem);
+  padding-bottom: clamp(2rem, 6vh, 4.5rem);
+}
+
+.hero__title {
+  margin: 0;
+  color: var(--white);
+  font-size: var(--fs-hero);
+  font-weight: 600;
+  font-stretch: var(--wide);
   line-height: 0.98;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.035em;
+}
+
+.hero__foot {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  margin-top: clamp(1.75rem, 4.5vh, 3rem);
+  padding-top: clamp(1.25rem, 3vh, 1.75rem);
+}
+
+.hero__foot::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: left;
+}
+
+.hero__lede {
+  max-width: 38ch;
+  margin: 0;
+  color: var(--gray);
+  font-size: var(--fs-lede);
+  line-height: 1.55;
+  text-wrap: balance;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.75rem;
+}
+
+@media (max-width: 767px) {
+  .hero__video {
+    /* portrait crop: keep the cable's path and the panel it lands on */
+    object-position: 58% 50%;
+  }
+
+  .hero__title {
+    font-stretch: 110%;
+  }
+}
+
+/* ------------------------------------------------------------ page load -- */
+/*
+  One entrance, CSS only: the bar settles, the headline wipes up line by line,
+  the rule draws, then the copy and actions. The video fades in on its own
+  cue (above).
+*/
+@keyframes line-up {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.nav__bar > * {
+  animation: drop 900ms var(--ease-expo) 100ms both;
+}
+
+.hero__title .mask > span {
+  animation: line-up 1.2s var(--ease-expo) both;
+}
+
+.hero__title .mask:nth-child(1) > span {
+  animation-delay: 250ms;
+}
+
+.hero__title .mask:nth-child(2) > span {
+  animation-delay: 370ms;
+}
+
+.hero__foot::before {
+  animation: draw 1.4s var(--ease-expo) 500ms both;
+}
+
+.hero__lede {
+  animation: rise 1s var(--ease-expo) 650ms both;
+}
+
+.hero__actions {
+  animation: rise 1s var(--ease-expo) 760ms both;
+}
+
+/* ============================================================ SECTIONS ==== */
+
+.section {
+  position: relative;
+  padding-block: var(--section);
+}
+
+.section--tight {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+/* heading left, its lede answering from the right on the same baseline */
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 1.5rem clamp(2rem, 6vw, 6rem);
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.head .lede {
+  padding-bottom: 0.35rem;
+}
+
+/* a heading on its own gets the full measure */
+.head:not(:has(.lede)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 899px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ======================================================= MATERIALS: PANEL == */
+/*
+  Six breakers on a DIN rail. They are off until the panel first scrolls into
+  view, then switch on one after another (reveals.js adds .is-revealed). With
+  no JS, or with reduced motion, they are simply on.
+*/
+
+.panel {
+  --sw-h: 88px; /* switch height */
+  --lever: 38px; /* lever height */
+  --travel: calc(var(--sw-h) - var(--lever) - 12px);
+  --top: 1.25rem;
+  --pad: 1.1rem;
+  position: relative;
+  padding: clamp(0.6rem, 1.2vw, 0.9rem);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--surface), #0e1012);
+}
+
+.panel__rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the rail itself, seen through the gaps between breakers */
+.panel__rail::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  right: -1rem;
+  top: calc(var(--pad) + var(--top) + 1.5rem + var(--sw-h) / 2 - 9px);
+  height: 18px;
+  border-block: 1px solid var(--line);
+  background: repeating-linear-gradient(90deg, #1b1f21 0 16px, #121517 16px 20px);
+}
+
+.panel__rail li {
+  position: relative; /* above the rail */
+}
+
+.breaker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 340px;
+  padding: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #181b1d, #131618);
+  color: var(--gray);
+  text-decoration: none;
+  transition:
+    border-color 300ms var(--ease),
+    background-color 300ms var(--ease),
+    transform 450ms var(--ease-expo);
+}
+
+.breaker:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-4px);
+}
+
+.breaker:active {
+  transform: translateY(-1px);
+  transition-duration: 100ms;
+}
+
+.breaker__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--top);
+}
+
+.breaker__no {
+  color: var(--gray-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.breaker__led {
+  width: 16px;
+  height: 5px;
+  background: var(--green);
+  box-shadow:
+    0 0 2px var(--green),
+    0 0 12px rgba(85, 242, 13, 0.7);
+  transform: skewX(var(--skew));
+  transition:
+    background-color 300ms var(--ease),
+    box-shadow 500ms var(--ease);
+}
+
+.breaker__switch {
+  position: relative;
+  align-self: center;
+  width: 46px;
+  height: var(--sw-h);
+  margin-block: 1.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: #0a0c0d;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* ON is up, like the real thing */
+.breaker__lever {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  height: var(--lever);
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(0, 0, 0, 0.25) 5px 6px) center / 60% 40% no-repeat,
+    linear-gradient(180deg, #43494c, #2b3033);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 12px rgba(0, 0, 0, 0.55);
+  transform: translateY(calc(-1 * var(--travel)));
+  transition: transform 700ms var(--ease-expo);
+}
+
+.breaker__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: auto;
+}
+
+.breaker__name {
+  color: var(--white);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.breaker__note {
+  color: var(--gray-3);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: color 300ms var(--ease);
+}
+
+.breaker:hover .breaker__note {
+  color: var(--gray);
+}
+
+/* "ask about this": an arrow that comes in on hover/focus */
+.breaker::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--pad) + var(--top) + 1.5rem);
+  right: var(--pad);
+  width: 18px;
+  height: 18px;
+  background: var(--green);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition:
+    opacity 250ms var(--ease),
+    transform 400ms var(--ease-expo);
+}
+
+.breaker:hover::after,
+.breaker:focus-visible::after {
+  opacity: 1;
+  transform: none;
+}
+
+/* off, until the panel has been seen */
+.js-reveals .panel .breaker__lever {
+  transition-delay: calc(350ms + var(--i) * 120ms);
+}
+
+.js-reveals .panel .breaker__led {
+  transition-delay: calc(520ms + var(--i) * 120ms);
+}
+
+.js-reveals .panel:not(.is-revealed) .breaker__lever {
+  transform: none;
+}
+
+.js-reveals .panel:not(.is-revealed) .breaker__led {
+  background: #2a2f31;
+  box-shadow: none;
+}
+
+@media (max-width: 1099px) {
+  .panel__rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .panel__rail::before {
+    display: none;
+  }
+
+  .breaker {
+    min-height: 300px;
+  }
+}
+
+/* phones: a panel directory — switch, then the name, one row per circuit */
+@media (max-width: 639px) {
+  .panel {
+    --sw-h: 58px;
+    --lever: 24px;
+    --travel: calc(var(--sw-h) - var(--lever) - 10px);
+  }
+
+  .panel__rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .breaker {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'switch top' 'switch text';
+    align-items: center;
+    gap: 0.25rem 1.1rem;
+    min-height: 0;
+    padding: 0.9rem 1rem;
+  }
+
+  .breaker:hover {
+    transform: none;
+  }
+
+  .breaker__top {
+    grid-area: top;
+  }
+
+  .breaker__switch {
+    grid-area: switch;
+    width: 34px;
+    margin: 0;
+  }
+
+  .breaker__lever {
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+  }
+
+  .breaker__text {
+    grid-area: text;
+    margin: 0;
+  }
+
+  .breaker::after {
+    display: none;
+  }
+}
+
+/* ================================================================ BAND ==== */
+
+.band {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: clamp(26rem, 85vh, 54rem);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.band__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* no visible top or bottom edge: the room fades out of the page and back */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
+}
+
+.band__media img {
+  position: absolute;
+  inset: -8% 0;
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  object-position: 70% 50%;
+  opacity: 0.75;
+}
+
+.band__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 13, 14, 0.85) 0%, rgba(11, 13, 14, 0.2) 65%);
+}
+
+.band__line {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(2.2rem, 6vw, 5.5rem);
+  font-weight: 600;
+  font-stretch: var(--wide);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.band__line .mask:first-child {
+  color: var(--gray);
+}
+
+/* ============================================================ SERVICES ==== */
+
+.services__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+/* one frame, sticky, that follows whichever step is in the middle of the
+   screen (services.js) */
+.services__media {
+  position: sticky;
+  top: calc(var(--nav-h) + 2rem);
+  aspect-ratio: 4 / 5;
+  max-height: calc(100svh - var(--nav-h) - 4rem);
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.services__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--x, 50%) 50%;
+  opacity: 0;
+  transform: scale(1.08);
+  transition:
+    opacity 900ms var(--ease),
+    transform 1.8s var(--ease-expo);
+}
+
+.services__media img.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.services__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(11, 13, 14, 0.7), rgba(11, 13, 14, 0) 35%);
+  pointer-events: none;
+}
+
+.services__count {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.services__bar {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transform: scaleX(calc((var(--step, 0) + 1) / 3));
+  transform-origin: left;
+  transition: transform 900ms var(--ease-expo);
+}
+
+.services__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  min-height: min(72vh, 44rem);
+  padding-block: 3rem;
+  border-top: 1px solid var(--line);
+  transition: opacity 600ms var(--ease);
+}
+
+.service:first-child {
+  border-top: 0;
+}
+
+/* dimmed only while services.js is there to bring each one up */
+.services.is-live .service:not(.is-active) {
+  opacity: 0.32;
+}
+
+.service__img {
+  display: none;
+}
+
+.service__no {
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.service .h3 {
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  font-stretch: var(--wide);
+  letter-spacing: -0.025em;
+}
+
+.service p {
+  max-width: 40ch;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.service .link {
+  align-self: flex-start;
+}
+
+@media (max-width: 899px) {
+  .services__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .services__media {
+    display: none;
+  }
+
+  .service,
+  .services.is-live .service:not(.is-active) {
+    min-height: 0;
+    padding-block: 2.5rem;
+    opacity: 1;
+  }
+
+  .service:first-child {
+    padding-top: 0;
+  }
+
+  .service__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+}
+
+/* =========================================================== SOLUTIONS ==== */
+
+.spaces {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.space {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 4vw, 4rem) 0 0;
+}
+
+.space + .space {
+  padding-right: 0;
+  padding-left: clamp(1.5rem, 4vw, 4rem);
+  border-left: 1px solid var(--line);
+}
+
+.space::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 700ms var(--ease-expo);
+}
+
+.space:hover::before,
+.space:focus-within::before {
+  transform: scaleX(1);
+}
+
+.space__kind {
+  margin: 0;
+  color: var(--gray-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* a single conductor drawn across the page as you scroll into the CTA */
-.cta__wire {
-  width: min(100%, 46rem);
-  height: 1px;
-  margin: clamp(2.5rem, 7vh, 4rem) auto;
-  background: linear-gradient(90deg, transparent, var(--green), transparent);
-  transform: scaleX(0);
+.space .h3 {
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  font-stretch: var(--wide);
+  letter-spacing: -0.03em;
+}
+
+.space__lede {
+  max-width: 40ch;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.ticks {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.ticks li {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--white);
+}
+
+.ticks li::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 4px;
+  background: var(--green);
+  transform: skewX(var(--skew));
+}
+
+.space .link {
+  align-self: flex-start;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .spaces {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .space,
+  .space + .space {
+    padding: 2.25rem 0 0;
+    border-left: 0;
+  }
+
+  .space + .space {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ============================================================== BRANDS ==== */
+
+.brands {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.brand {
+  display: grid;
+  place-items: center;
+  min-height: clamp(96px, 11vw, 150px);
+  padding: 1.25rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* normalised by height: these marks have wildly different proportions */
+.brand img {
+  width: auto;
+  max-width: 82%;
+  height: clamp(22px, 2.3vw, 32px);
+  object-fit: contain;
+  opacity: 0.6;
+  filter: grayscale(1) brightness(1.9);
+  transition:
+    opacity 300ms var(--ease),
+    filter 300ms var(--ease);
+}
+
+/* drawn in black: inverted so they read on the dark page */
+.brand--invert img {
+  filter: grayscale(1) invert(1) brightness(1.25);
+}
+
+.brand:hover img {
+  opacity: 1;
+  filter: none;
+}
+
+.brand--invert:hover img {
+  filter: grayscale(1) invert(1) brightness(1.5);
+}
+
+.brand--text {
+  color: var(--gray);
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 600;
+  font-stretch: 112%;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+  transition: opacity 300ms var(--ease);
+}
+
+.brand--text:hover {
+  opacity: 1;
+}
+
+@media (max-width: 639px) {
+  .brands {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =============================================================== ABOUT ==== */
+
+.about {
+  position: relative;
+  padding-top: clamp(12rem, 30vw, 24rem);
+  padding-bottom: var(--section);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.about__media {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: clamp(24rem, 58vw, 46rem);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 45%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 45%, transparent);
+}
+
+.about__media img {
+  position: absolute;
+  inset: -8% 0;
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.principle {
+  position: relative;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.principle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 26px;
+  height: 3px;
+  background: var(--green);
+  transform: skewX(var(--skew));
+  transform-origin: left;
+}
+
+.principle__title {
+  margin: 0 0 0.6rem;
+  color: var(--white);
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-stretch: 106%;
+  letter-spacing: -0.01em;
+}
+
+.principle p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 1023px) {
+  .principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2.5rem;
+  }
+}
+
+@media (max-width: 539px) {
+  .principles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ================================================================= CTA ==== */
+/* the one place the green takes over the whole surface */
+
+.cta {
+  padding-inline: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+.cta__panel {
+  padding-block: clamp(4.5rem, 11vw, 9rem);
+  border-radius: 10px;
+  background: var(--green);
+  color: var(--green-ink);
+}
+
+.cta__title {
+  margin: 0;
+  color: var(--bg);
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 700;
+  font-stretch: 125%;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.cta__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(6, 33, 10, 0.3);
 }
 
 .cta__lede {
-  margin: 0 auto clamp(2rem, 5vh, 3rem);
-  color: var(--gray);
+  max-width: 34ch;
+  margin: 0;
+  color: var(--green-ink);
   font-size: var(--fs-lede);
+  font-weight: 500;
+  line-height: 1.5;
 }
 
-/* ============================================================== CONTACT ==== */
+/* ============================================================= CONTACT ==== */
 
 .contact__grid {
   display: grid;
-  gap: clamp(2.5rem, 6vw, 5rem);
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   align-items: start;
+  gap: clamp(2.5rem, 7vw, 7rem);
+}
+
+.contact__aside {
+  position: sticky;
+  top: calc(var(--nav-h) + 2.5rem);
+}
+
+/* the narrow column would break "Contanos sobre" inside its own mask */
+.contact__aside .h2 {
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  font-stretch: 110%;
 }
 
 .contact__aside .lede {
@@ -1304,45 +1528,70 @@ body {
 }
 
 .contact__direct {
-  margin-top: clamp(2rem, 5vh, 3rem);
+  display: grid;
+  gap: 1.25rem;
+  margin: clamp(2rem, 5vh, 3rem) 0 0;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--line);
+}
+
+.contact__direct dt {
+  color: var(--gray-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contact__direct dd {
+  margin: 0.35rem 0 0;
+  color: var(--gray-3);
 }
 
 .contact__direct a {
   color: var(--white);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule-strong);
-  transition: border-color var(--dur) var(--ease-out);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 200ms var(--ease);
 }
 
 .contact__direct a:hover {
-  border-color: var(--green);
+  text-decoration-color: var(--green);
 }
 
 @media (max-width: 899px) {
   .contact__grid {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .contact__aside {
+    position: static;
+  }
 }
 
-/* --------------------------------------------------------------------- form */
+/* ---------------------------------------------------------------- form -- */
+
+.form {
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.form > * + * {
+  margin-top: 1.25rem;
+}
 
 .form__row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 2.5vw, 2rem);
+  gap: 1.25rem;
 }
 
-/* space the form's top-level blocks only — never the two fields sharing a row */
-.contact__form > * + * {
-  margin-top: clamp(1.25rem, 3vh, 1.75rem);
-}
-
-@media (max-width: 639px) {
+@media (max-width: 599px) {
   .form__row {
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(1.25rem, 3vh, 1.75rem);
   }
 }
 
@@ -1350,35 +1599,53 @@ body {
   display: block;
   margin-bottom: 0.5rem;
   color: var(--gray);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 200ms var(--ease);
+}
+
+.field:focus-within label {
+  color: var(--white);
 }
 
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  padding: 0.85rem 0;
-  border: 0;
-  border-bottom: 1px solid var(--rule-strong);
-  border-radius: 0;
-  background: none;
+  min-height: 50px;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--bg);
   color: var(--white);
-  font-family: var(--font-body);
+  font: inherit;
   font-size: 1rem;
-  transition: border-color var(--dur) var(--ease-out);
+  transition:
+    border-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: rgba(181, 183, 185, 0.45);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(85, 242, 13, 0.16);
 }
 
 .field select {
-  /* keep the native picker but let the closed state match the other fields */
   appearance: none;
-  padding-right: 1.5rem;
-  background-image: linear-gradient(45deg, transparent 50%, var(--gray) 50%),
-    linear-gradient(135deg, var(--gray) 50%, transparent 50%);
-  background-position: right 6px center, right 1px center;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
+  padding-right: 2.75rem;
+  background: var(--bg)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b5b7b9' stroke-width='1.6'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    right 1rem center / 18px no-repeat;
+  cursor: pointer;
 }
 
 .field select option {
@@ -1387,21 +1654,8 @@ body {
 }
 
 .field textarea {
-  min-height: 7rem;
+  min-height: 8.5rem;
   resize: vertical;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  outline: none;
-  border-color: var(--green);
-}
-
-.field input:focus-visible,
-.field select:focus-visible,
-.field textarea:focus-visible {
-  outline: none;
 }
 
 .field[data-invalid] input,
@@ -1412,34 +1666,58 @@ body {
 
 .field__error {
   display: block;
-  margin-top: 0.5rem;
-  min-height: 1.1em;
-  color: #ff8f85;
-  font-size: 0.8rem;
+  min-height: 1.2em;
+  margin-top: 0.4rem;
+  color: var(--error);
+  font-size: 0.82rem;
 }
 
 .field--consent {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.75rem;
   align-items: start;
-  margin-top: clamp(1.5rem, 4vh, 2rem);
+  gap: 0.85rem;
 }
 
 .field--consent input {
-  width: 18px;
-  height: 18px;
-  margin-top: 0.15rem;
-  accent-color: var(--green);
+  appearance: none;
+  display: grid;
+  place-content: center;
+  width: 22px;
+  min-height: 0;
+  height: 22px;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.field--consent input::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--green-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.5'%3E%3Cpath d='m4 12 5 5L20 6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.5'%3E%3Cpath d='m4 12 5 5L20 6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: scale(0);
+  transition: transform 250ms var(--ease-expo);
+}
+
+.field--consent input:checked {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.field--consent input:checked::after {
+  transform: none;
 }
 
 .field--consent label {
   margin: 0;
   color: var(--gray);
-  font-size: 0.85rem;
-  letter-spacing: 0;
-  text-transform: none;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  cursor: pointer;
 }
 
 /* honeypot: off-screen rather than display:none, which some bots skip */
@@ -1455,13 +1733,13 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  margin-top: clamp(1.75rem, 4vh, 2.5rem);
+  gap: 1rem 1.5rem;
+  margin-top: 1.75rem;
 }
 
 .form__status {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   line-height: 1.5;
 }
 
@@ -1470,65 +1748,54 @@ body {
 }
 
 .form__status[data-state='error'] {
-  color: #ff8f85;
+  color: var(--error);
 }
 
-.btn[aria-disabled='true'],
-.btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* =============================================================== FOOTER ==== */
+/* ============================================================== FOOTER ==== */
 
 .footer {
-  padding-block: clamp(3.5rem, 9vh, 6rem) clamp(2rem, 5vh, 3rem);
-  border-top: 1px solid var(--rule);
-  background: var(--bg);
+  padding-block: clamp(3.5rem, 8vw, 6rem) 2rem;
+  border-top: 1px solid var(--line);
 }
 
 .footer__top {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem clamp(2rem, 5vw, 4rem);
 }
 
-.footer__logo {
-  display: block;
+.footer__brand img {
   width: auto;
-  height: 22px;
+  height: 24px;
 }
 
-.footer__slogan {
+.footer__brand p {
   margin: 1.25rem 0 0;
-  color: var(--gray);
-  font-size: 0.95rem;
 }
 
 .footer__heading {
-  margin: 0 0 1.25rem;
-  color: var(--gray);
-  font-size: var(--fs-eyebrow);
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  margin: 0 0 1.1rem;
+  color: var(--gray-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .footer__list {
+  display: grid;
+  gap: 0.35rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.footer__list li + li {
-  margin-top: 0.7rem;
-}
-
 .footer__list a {
+  display: inline-block;
+  padding-block: 0.3rem;
   color: var(--white);
-  font-size: 0.95rem;
   text-decoration: none;
-  transition: color var(--dur) var(--ease-out);
+  transition: color 200ms var(--ease);
 }
 
 .footer__list a:hover {
@@ -1539,289 +1806,131 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(3rem, 8vh, 5rem);
+  gap: 0.5rem 1.5rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
   padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-  color: var(--gray);
-  font-size: 0.8rem;
+  border-top: 1px solid var(--line);
+  color: var(--gray-3);
+  font-size: 0.85rem;
 }
 
-@media (max-width: 899px) {
+.footer__bottom p {
+  margin: 0;
+}
+
+@media (max-width: 767px) {
   .footer__top {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .footer__brand {
     grid-column: 1 / -1;
-    margin-bottom: 1rem;
   }
 }
 
-
-/* =============================================================== BRANDS ==== */
-
-.marquee-section {
-  position: relative;
-  z-index: 1;
-  padding-block: var(--section-y);
-  background: var(--bg);
-  overflow: hidden;
-}
-
-/* the brands strip standing inside the room rather than on a flat panel */
-.marquee-section--depth {
-  isolation: isolate;
-  padding-block: clamp(5.5rem, 15vh, 9.5rem);
-}
-
-/* Wash under the content only. The strip is small grey type, so it needs more
-   cover than the big display copy over the other backdrop does. */
-.marquee-section--depth::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, var(--bg) 0%, rgba(11, 13, 14, 0.2) 34%, rgba(11, 13, 14, 0.2) 66%, var(--bg) 100%),
-    radial-gradient(80% 46% at 50% 62%, rgba(11, 13, 14, 0.72), rgba(11, 13, 14, 0) 100%);
-}
-
-.marquee-section__head {
-  margin-bottom: clamp(3.5rem, 10vh, 6rem);
-}
-
-.marquee {
-  /* the strip dissolves at both edges instead of ending in a hard cut */
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 10%,
-    #000 90%,
-    transparent
-  );
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-}
-
-.marquee__track {
-  display: flex;
-  width: max-content;
-  /* THE speed knob. One full pass of a single group. */
-  animation: marquee-scroll var(--marquee-duration, 38s) linear infinite;
-  will-change: transform;
-}
-
-/* the track holds the group twice, so -50% lands exactly on the seam */
-@keyframes marquee-scroll {
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-.marquee:hover .marquee__track,
-.marquee:focus-within .marquee__track,
-.marquee-section.is-offscreen .marquee__track {
-  animation-play-state: paused;
-}
-
-.marquee__group {
-  display: flex;
-  align-items: center;
-  gap: clamp(3rem, 7vw, 7rem);
-  margin: 0;
-  padding: 0 clamp(1.5rem, 3.5vw, 3.5rem) 0 0;
-  list-style: none;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  flex: none;
-  opacity: 0.62;
-  /* normalised by HEIGHT — these logos have wildly different aspect ratios and
-     matching their widths would distort the relationship between them */
-  filter: grayscale(1) brightness(1.9);
-  transition:
-    opacity 260ms var(--ease-out),
-    filter 260ms var(--ease-out),
-    transform 260ms var(--ease-out);
-}
-
-.brand img {
-  display: block;
-  width: auto;
-  /*
-    Normalised by HEIGHT, never by width — these marks have wildly different
-    proportions. Capped low on purpose: the raster logos are only 32–62px tall
-    natively, so pushing them past this would visibly soften them.
-  */
-  height: clamp(24px, 2.3vw, 32px);
-  object-fit: contain;
-}
-
-/* A wide horizontal lockup with small type in it needs a little more room to
-   stay legible than a compact wordmark does. */
-.brand--wide img {
-  height: clamp(28px, 2.7vw, 38px);
-}
-
-/* brands still waiting for their official artwork — set as a plain name, never
-   as a traced or re-lettered logo */
-.brand--text {
-  color: var(--gray);
-  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  filter: none;
-}
-
-/* Logos drawn in black: inverted so they read as white on the dark page. They
-   keep that treatment on hover — their "original colour" is black, which would
-   simply disappear here. */
-.brand--invert {
-  filter: grayscale(1) invert(1) brightness(1.25);
-}
-
-.brand:hover,
-.brand:focus-visible {
-  opacity: 1;
-  filter: grayscale(0) brightness(1);
-  transform: scale(1.03);
-}
-
-.brand--invert:hover,
-.brand--invert:focus-visible {
-  filter: grayscale(1) invert(1) brightness(1.45);
-}
-
-.brand--text:hover,
-.brand--text:focus-visible {
-  color: var(--white);
-  filter: none;
-}
-
-.marquee__note {
-  margin: clamp(2rem, 5vh, 3rem) 0 0;
-  color: var(--gray);
-  font-size: 0.85rem;
-}
-
-@media (max-width: 899px) {
-  .marquee__track {
-    /* slower on a narrow screen: the same speed reads as frantic */
-    --marquee-duration: 55s;
-  }
-
-  .brand {
-    /* nothing to hover with, so the strip reads at full strength */
-    opacity: 0.85;
-  }
-}
-
+/* ============================================================= REVEALS ==== */
 /*
-  No travel at all: a plain wrapped list. Driven by `.is-static` (set by
-  marquee.js, which also decides not to clone the group) with the media query as
-  the no-JS fallback — the two must agree, so they share the same declarations.
-*/
-.marquee-section.is-static .marquee {
-  mask-image: none;
-  -webkit-mask-image: none;
-}
-
-.marquee-section.is-static .marquee__track {
-  width: auto;
-  animation: none;
-}
-
-.marquee-section.is-static .marquee__group {
-  flex-wrap: wrap;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: 0;
-}
-
-.marquee-section.is-static .brand {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee {
-    mask-image: none;
-    -webkit-mask-image: none;
-  }
-
-  .marquee__track {
-    width: auto;
-    animation: none;
-  }
-
-  .marquee__group {
-    flex-wrap: wrap;
-    gap: clamp(1.5rem, 4vw, 3rem);
-    padding: 0;
-  }
-
-  .brand {
-    opacity: 1;
-  }
-}
-
-/* ============================================================== REVEALS ==== */
-/*
-   Only active once src/sections/reveals.js has put `.js-reveals` on <html>.
-   Without JS — or with reduced motion — none of this applies and every section
-   renders in its final state.
-
-   One duration, one easing, three shapes:
-     default        opacity + rise
-     inside a mask  rises from behind the crop (headings)
-     .grow-line     scales out from its left edge (rules under a row)
+  Only active once reveals.js has put `.js-reveals` on <html>: no JS, or
+  reduced motion, and every section simply renders in its final state.
+  Headings wipe up from behind their masks; everything else rises.
 */
 
 .js-reveals [data-reveal],
 .js-reveals [data-reveal-item] {
   transition:
-    opacity var(--reveal-dur) var(--ease-out) var(--reveal-delay, 0ms),
-    transform var(--reveal-dur) var(--ease-out) var(--reveal-delay, 0ms);
+    opacity var(--reveal) var(--ease-expo) var(--reveal-delay, 0ms),
+    transform var(--reveal) var(--ease-expo) var(--reveal-delay, 0ms);
 }
 
 .js-reveals [data-reveal]:not(.is-revealed) [data-reveal-item],
 .js-reveals [data-reveal]:not(.is-revealed):not(:has([data-reveal-item])) {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(24px);
 }
 
-/* headings: no fade, just the wipe — that is what makes it read as editorial */
-.js-reveals [data-reveal]:not(.is-revealed) .line-mask > [data-reveal-item] {
+.js-reveals [data-reveal]:not(.is-revealed) .mask > [data-reveal-item] {
   opacity: 1;
-  transform: translateY(105%);
+  transform: translateY(110%);
 }
 
-.js-reveals [data-reveal].is-revealed [data-reveal-item],
-.js-reveals [data-reveal].is-revealed {
-  opacity: 1;
-  transform: none;
+/* ============================================================== SCROLL ==== */
+/*
+  Scroll-linked depth, on the compositor via scroll-driven animations. Where
+  they are not supported the page is simply still.
+*/
+
+@keyframes hero-out {
+  to {
+    opacity: 0.3;
+    transform: translateY(16%) scale(1.04);
+  }
 }
 
-/* rules that draw themselves in as their row arrives */
-.js-reveals .grow-line::after {
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 900ms var(--ease-out) 60ms;
+@keyframes pan {
+  from {
+    transform: translateY(-6%);
+  }
+  to {
+    transform: translateY(6%);
+  }
 }
 
-.js-reveals .grow-line.is-revealed::after {
-  transform: scaleX(1);
+/* the green opens out as it arrives. The side inset stays under the gutter
+   so the copy is never cut while it grows. */
+@keyframes cta-open {
+  from {
+    clip-path: inset(8% 1rem round 28px);
+  }
+  to {
+    clip-path: inset(0 round 10px);
+  }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .hero__media {
+      animation: hero-out linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+
+    .band__media img,
+    .about__media img {
+      animation: pan linear both;
+      animation-timeline: view();
+    }
+
+    .cta__panel {
+      animation: cta-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+/* ===================================================== REDUCED MOTION ==== */
 
 @media (prefers-reduced-motion: reduce) {
-  .js-reveals [data-reveal],
-  .js-reveals [data-reveal-item],
-  .js-reveals .grow-line::after {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
+  html {
+    scroll-behavior: auto;
+  }
+
+  .nav__bar > *,
+  .hero__title .mask > span,
+  .hero__foot::before,
+  .hero__lede,
+  .hero__actions,
+  .menu[open] .menu__links li,
+  .hero.is-ended .hero__video {
+    animation: none;
+  }
+
+  .hero__video,
+  .menu,
+  .services__media img,
+  .services__bar,
+  .breaker,
+  .breaker__lever {
+    transition-duration: 1ms;
   }
 }

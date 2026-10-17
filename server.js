@@ -14,6 +14,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { handleContact } from './server/contact.js';
+import { byteRange } from './server/range.js';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT ?? 4321);
@@ -29,6 +30,7 @@ const TYPES = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
+  '.mp4': 'video/mp4',
 };
 
 /** Never serve the source frames, the local inbox, or anything dot-prefixed. */
@@ -94,12 +96,32 @@ async function serveStatic(pathname, res, req) {
     return;
   }
 
-  res.writeHead(200, {
+  const headers = {
     'Content-Type': type,
     'Content-Length': info.size,
     'Last-Modified': lastModified,
     'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : 'no-cache',
-  });
+    'Accept-Ranges': 'bytes',
+  };
+
+  // Safari will not play a <video> from a server that ignores Range requests.
+  const range = byteRange(req.headers.range, info.size);
+  if (range === false) {
+    res.writeHead(416, { 'Content-Range': `bytes */${info.size}` }).end();
+    return;
+  }
+  if (range) {
+    const { start, end } = range;
+    res.writeHead(206, {
+      ...headers,
+      'Content-Length': end - start + 1,
+      'Content-Range': `bytes ${start}-${end}/${info.size}`,
+    });
+    createReadStream(file, { start, end }).pipe(res);
+    return;
+  }
+
+  res.writeHead(200, headers);
   createReadStream(file).pipe(res);
 }
 

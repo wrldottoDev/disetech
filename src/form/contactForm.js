@@ -130,13 +130,28 @@ export function initContactForm() {
     for (const name of Object.keys(RULES)) showError(name, '');
   }
 
+  // "Cotizar" links anywhere on the page arrive with the request type picked and
+  // the topic started — never overwriting something the visitor already wrote
+  const onQuote = (event) => {
+    const link = event.target.closest('[data-quote]');
+    if (!link) return;
+    form.elements.tipo.value = link.dataset.quote;
+    showError('tipo', '');
+    const message = form.elements.mensaje;
+    if (link.dataset.topic && !message.value.trim()) {
+      message.value = `Consulta sobre: ${link.dataset.topic}. `;
+    }
+  };
+
   form.addEventListener('submit', onSubmit);
   form.addEventListener('blur', onBlur, true);
   form.addEventListener('input', onInput);
+  document.addEventListener('click', onQuote);
 
   return () => {
     form.removeEventListener('submit', onSubmit);
     form.removeEventListener('blur', onBlur, true);
     form.removeEventListener('input', onInput);
+    document.removeEventListener('click', onQuote);
   };
 }
